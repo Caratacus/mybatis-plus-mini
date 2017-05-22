@@ -5,7 +5,7 @@
 
 <configuration>
 	<plugins>
-		<plugin interceptor="com.baomidou.mybatisplus.plugins.PerformanceInterceptor"></plugin>
+		<plugin interceptor="com.baomidou.mybatisplus.plugins.SqlPrintInterceptor"></plugin>
 		<plugin interceptor="com.baomidou.mybatisplus.plugins.OptimisticLockerInterceptor"></plugin>
 	</plugins>
 

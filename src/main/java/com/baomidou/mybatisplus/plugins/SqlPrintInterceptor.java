@@ -20,6 +20,8 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
@@ -30,7 +32,6 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 
-import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.toolkit.SqlUtils;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
@@ -47,12 +48,9 @@ import com.baomidou.mybatisplus.toolkit.SystemClock;
 @Intercepts({@Signature(type = StatementHandler.class, method = "query", args = {Statement.class, ResultHandler.class}),
         @Signature(type = StatementHandler.class, method = "update", args = {Statement.class}),
         @Signature(type = StatementHandler.class, method = "batch", args = {Statement.class})})
-public class PerformanceInterceptor implements Interceptor {
+public class SqlPrintInterceptor implements Interceptor {
 
-    /**
-     * SQL 执行最大时长，超过自动停止运行，有助于发现问题。
-     */
-    private long maxTime = 0;
+    private static final Log logger = LogFactory.getLog(PaginationInterceptor.class);
 
     private boolean format = false;
 
@@ -84,10 +82,7 @@ public class PerformanceInterceptor implements Interceptor {
         Object target = PluginUtils.realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(target);
         MappedStatement ms = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
-        System.err.println(" Time：" + timing + " ms" + " - ID：" + ms.getId() + "\n Execute SQL：" + formatSql + "\n");
-        if (maxTime >= 1 && timing > maxTime) {
-            throw new MybatisPlusException(" The SQL execution time is too large, please optimize ! ");
-        }
+        logger.warn(" Time：" + timing + " ms" + " - ID：" + ms.getId() + "\n Execute SQL：" + formatSql + "\n");
         return result;
     }
 
@@ -99,22 +94,10 @@ public class PerformanceInterceptor implements Interceptor {
     }
 
     public void setProperties(Properties prop) {
-        String maxTime = prop.getProperty("maxTime");
         String format = prop.getProperty("format");
-        if (StringUtils.isNotEmpty(maxTime)) {
-            this.maxTime = Long.parseLong(maxTime);
-        }
         if (StringUtils.isNotEmpty(format)) {
             this.format = Boolean.valueOf(format);
         }
-    }
-
-    public long getMaxTime() {
-        return maxTime;
-    }
-
-    public void setMaxTime(long maxTime) {
-        this.maxTime = maxTime;
     }
 
     public boolean isFormat() {

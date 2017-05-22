@@ -18,11 +18,10 @@ package com.baomidou.mybatisplus.plugins;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -54,8 +53,6 @@ import com.baomidou.mybatisplus.toolkit.PluginUtils;
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class PaginationInterceptor implements Interceptor {
-
-    private static final Log logger = LogFactory.getLog(PaginationInterceptor.class);
 
     /* 溢出总页数，设置第一页 */
     private boolean overflowCurrent = false;
@@ -112,7 +109,7 @@ public class PaginationInterceptor implements Interceptor {
      * @param boundSql
      * @param page
      */
-    protected void queryTotal(String sql, MappedStatement mappedStatement, BoundSql boundSql, Pagination page, Connection connection) {
+    protected void queryTotal(String sql, MappedStatement mappedStatement, BoundSql boundSql, Pagination page, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             DefaultParameterHandler parameterHandler = new MybatisDefaultParameterHandler(mappedStatement, boundSql.getParameterObject(), boundSql);
             parameterHandler.setParameters(statement);
@@ -131,8 +128,6 @@ public class PaginationInterceptor implements Interceptor {
                 page = new Pagination(1, page.getSize());
                 page.setTotal(total);
             }
-        } catch (Exception e) {
-            logger.error("Error: Method queryTotal execution error !", e);
         }
     }
 

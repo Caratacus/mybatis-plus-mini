@@ -27,7 +27,7 @@
 						</value>
 					</property>
 				</bean>
-				<bean class="com.baomidou.mybatisplus.plugins.PerformanceInterceptor" />
+				<bean class="com.baomidou.mybatisplus.plugins.SqlPrintInterceptor" />
 			</array>
 		</property>
 	</bean>
