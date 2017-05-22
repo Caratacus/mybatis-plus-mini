@@ -122,7 +122,7 @@ public interface IService<T> {
      * @param wrapper 实体包装类 {@link Wrapper}
      * @return boolean
      */
-    boolean delete(Wrapper<T> wrapper);
+    boolean delete(Wrapper wrapper);
 
     /**
      * <p>
@@ -163,7 +163,7 @@ public interface IService<T> {
      * @param wrapper 实体包装类 {@link Wrapper}
      * @return boolean
      */
-    boolean update(T entity, Wrapper<T> wrapper);
+    boolean update(T entity, Wrapper wrapper);
 
     /**
      * <p>
@@ -234,7 +234,7 @@ public interface IService<T> {
      * @param wrapper 实体对象
      * @return T
      */
-    T selectOne(Wrapper<T> wrapper);
+    T selectOne(Wrapper wrapper);
 
     /**
      * <p>
@@ -244,7 +244,7 @@ public interface IService<T> {
      * @param wrapper {@link Wrapper}
      * @return Map<String,Object>
      */
-    Map<String, Object> selectMap(Wrapper<T> wrapper);
+    Map<String, Object> selectMap(Wrapper wrapper);
 
     /**
      * <p>
@@ -254,7 +254,7 @@ public interface IService<T> {
      * @param wrapper {@link Wrapper}
      * @return Object
      */
-    Object selectObj(Wrapper<T> wrapper);
+    Object selectObj(Wrapper wrapper);
 
     /**
      * <p>
@@ -264,7 +264,7 @@ public interface IService<T> {
      * @param wrapper 实体对象
      * @return int
      */
-    int selectCount(Wrapper<T> wrapper);
+    int selectCount(Wrapper wrapper);
 
     /**
      * <p>
@@ -274,7 +274,7 @@ public interface IService<T> {
      * @param wrapper 实体包装类 {@link Wrapper}
      * @return
      */
-    List<T> selectList(Wrapper<T> wrapper);
+    List<T> selectList(Wrapper wrapper);
 
     /**
      * <p>
@@ -294,7 +294,7 @@ public interface IService<T> {
      * @param wrapper {@link Wrapper}
      * @return
      */
-    List<Map<String, Object>> selectMaps(Wrapper<T> wrapper);
+    List<Map<String, Object>> selectMaps(Wrapper wrapper);
 
     /**
      * <p>
@@ -304,7 +304,7 @@ public interface IService<T> {
      * @param wrapper 实体对象封装操作类（可以为 null）
      * @return List<Object>
      */
-    List<Object> selectObjs(Wrapper<T> wrapper);
+    List<Object> selectObjs(Wrapper wrapper);
 
     /**
      * <p>
@@ -316,7 +316,7 @@ public interface IService<T> {
      * @return
      */
     @SuppressWarnings("rawtypes")
-    Page<Map<String, Object>> selectMapsPage(Page page, Wrapper<T> wrapper);
+    Page<Map<String, Object>> selectMapsPage(Page page, Wrapper wrapper);
 
     /**
      * <p>
@@ -327,6 +327,6 @@ public interface IService<T> {
      * @param wrapper 实体包装类 {@link Wrapper}
      * @return
      */
-    Page<T> selectPage(Page<T> page, Wrapper<T> wrapper);
+    Page<T> selectPage(Page<T> page, Wrapper wrapper);
 
 }

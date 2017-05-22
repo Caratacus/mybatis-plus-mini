@@ -209,7 +209,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     }
 
     @Transactional
-    public boolean delete(Wrapper<T> wrapper) {
+    public boolean delete(Wrapper wrapper) {
         return retBool(baseMapper.delete(wrapper));
     }
 
@@ -229,7 +229,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     }
 
     @Transactional
-    public boolean update(T entity, Wrapper<T> wrapper) {
+    public boolean update(T entity, Wrapper wrapper) {
         return retBool(baseMapper.update(entity, wrapper));
     }
 
@@ -272,23 +272,23 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
         return baseMapper.selectByMap(columnMap);
     }
 
-    public T selectOne(Wrapper<T> wrapper) {
+    public T selectOne(Wrapper wrapper) {
         return SqlHelper.getObject(baseMapper.selectList(wrapper));
     }
 
-    public Map<String, Object> selectMap(Wrapper<T> wrapper) {
+    public Map<String, Object> selectMap(Wrapper wrapper) {
         return SqlHelper.getObject(baseMapper.selectMaps(wrapper));
     }
 
-    public Object selectObj(Wrapper<T> wrapper) {
+    public Object selectObj(Wrapper wrapper) {
         return SqlHelper.getObject(baseMapper.selectObjs(wrapper));
     }
 
-    public int selectCount(Wrapper<T> wrapper) {
+    public int selectCount(Wrapper wrapper) {
         return SqlHelper.retCount(baseMapper.selectCount(wrapper));
     }
 
-    public List<T> selectList(Wrapper<T> wrapper) {
+    public List<T> selectList(Wrapper wrapper) {
         return baseMapper.selectList(wrapper);
     }
 
@@ -297,22 +297,22 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
         return selectPage(page, Condition.EMPTY);
     }
 
-    public List<Map<String, Object>> selectMaps(Wrapper<T> wrapper) {
+    public List<Map<String, Object>> selectMaps(Wrapper wrapper) {
         return baseMapper.selectMaps(wrapper);
     }
 
-    public List<Object> selectObjs(Wrapper<T> wrapper) {
+    public List<Object> selectObjs(Wrapper wrapper) {
         return baseMapper.selectObjs(wrapper);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public Page<Map<String, Object>> selectMapsPage(Page page, Wrapper<T> wrapper) {
+    public Page<Map<String, Object>> selectMapsPage(Page page, Wrapper wrapper) {
         SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.selectMapsPage(page, wrapper));
         return page;
     }
 
-    public Page<T> selectPage(Page<T> page, Wrapper<T> wrapper) {
+    public Page<T> selectPage(Page<T> page, Wrapper wrapper) {
         SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.selectPage(page, wrapper));
         return page;

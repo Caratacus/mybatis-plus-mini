@@ -83,7 +83,7 @@ public interface BaseMapper<T> {
      * @param wrapper 实体对象封装操作类（可以为 null）
      * @return int
      */
-    Integer delete(@Param("ew") Wrapper<T> wrapper);
+    Integer delete(@Param("ew") Wrapper wrapper);
 
     /**
      * <p>
@@ -124,7 +124,7 @@ public interface BaseMapper<T> {
      * @param wrapper 实体对象封装操作类（可以为 null）
      * @return
      */
-    Integer update(@Param("et") T entity, @Param("ew") Wrapper<T> wrapper);
+    Integer update(@Param("et") T entity, @Param("ew") Wrapper wrapper);
 
     /**
      * <p>
@@ -174,7 +174,7 @@ public interface BaseMapper<T> {
      * @param wrapper 实体对象
      * @return int
      */
-    Integer selectCount(@Param("ew") Wrapper<T> wrapper);
+    Integer selectCount(@Param("ew") Wrapper wrapper);
 
     /**
      * <p>
@@ -184,7 +184,7 @@ public interface BaseMapper<T> {
      * @param wrapper 实体对象封装操作类（可以为 null）
      * @return List<T>
      */
-    List<T> selectList(@Param("ew") Wrapper<T> wrapper);
+    List<T> selectList(@Param("ew") Wrapper wrapper);
 
     /**
      * <p>
@@ -194,7 +194,7 @@ public interface BaseMapper<T> {
      * @param wrapper 实体对象封装操作类（可以为 null）
      * @return List<T>
      */
-    List<Map<String, Object>> selectMaps(@Param("ew") Wrapper<T> wrapper);
+    List<Map<String, Object>> selectMaps(@Param("ew") Wrapper wrapper);
 
     /**
      * <p>
@@ -204,7 +204,7 @@ public interface BaseMapper<T> {
      * @param wrapper 实体对象封装操作类（可以为 null）
      * @return List<Object>
      */
-    List<Object> selectObjs(@Param("ew") Wrapper<T> wrapper);
+    List<Object> selectObjs(@Param("ew") Wrapper wrapper);
 
     /**
      * <p>
@@ -215,7 +215,7 @@ public interface BaseMapper<T> {
      * @param wrapper   实体对象封装操作类（可以为 null）
      * @return List<T>
      */
-    List<T> selectPage(RowBounds rowBounds, @Param("ew") Wrapper<T> wrapper);
+    List<T> selectPage(RowBounds rowBounds, @Param("ew") Wrapper wrapper);
 
     /**
      * <p>
@@ -226,6 +226,6 @@ public interface BaseMapper<T> {
      * @param wrapper   实体对象封装操作类
      * @return List<Map<String, Object>>
      */
-    List<Map<String, Object>> selectMapsPage(RowBounds rowBounds, @Param("ew") Wrapper<T> wrapper);
+    List<Map<String, Object>> selectMapsPage(RowBounds rowBounds, @Param("ew") Wrapper wrapper);
 
 }

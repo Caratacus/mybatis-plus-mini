@@ -300,7 +300,7 @@ public abstract class Model<T extends Model> implements Serializable {
      * @param wrapper
      * @return
      */
-    public Page<T> selectPage(Page<T> page, Wrapper<T> wrapper) {
+    public Page<T> selectPage(Page<T> page, Wrapper wrapper) {
         Map<String, Object> map = new HashMap<>();
         SqlHelper.fillWrapper(page, wrapper);
         map.put("ew", wrapper);

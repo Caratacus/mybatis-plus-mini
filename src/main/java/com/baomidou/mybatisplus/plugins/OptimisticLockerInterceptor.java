@@ -187,7 +187,7 @@ public final class OptimisticLockerInterceptor implements Interceptor {
         if (parameterObject instanceof ParamMap) {
             ParamMap<?> paramMap = (ParamMap<?>) parameterObject;
             parameterObject = paramMap.get("et");
-            EntityWrapper<?> entityWrapper = (EntityWrapper<?>) paramMap.get("ew");
+            EntityWrapper entityWrapper = (EntityWrapper) paramMap.get("ew");
             if (entityWrapper != null) {
                 Object entity = entityWrapper.getEntity();
                 if (entity != null && lockerCache.field.get(entity) == null) {

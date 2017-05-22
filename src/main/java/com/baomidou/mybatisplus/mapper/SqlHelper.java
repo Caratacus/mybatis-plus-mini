@@ -162,7 +162,7 @@ public class SqlHelper {
      * @param page
      * @param wrapper
      */
-    public static void fillWrapper(Page<?> page, Wrapper<?> wrapper) {
+    public static void fillWrapper(Page<?> page, Wrapper wrapper) {
         if (null == page) {
             return;
         }
@@ -180,7 +180,7 @@ public class SqlHelper {
      * @param wrapper
      * @return
      */
-    public static boolean isEmptyOfWrapper(Wrapper<?> wrapper) {
+    public static boolean isEmptyOfWrapper(Wrapper wrapper) {
         return null == wrapper || Condition.EMPTY.equals(wrapper);
     }
 
@@ -190,7 +190,7 @@ public class SqlHelper {
      * @param wrapper
      * @return
      */
-    public static boolean isNotEmptyOfWrapper(Wrapper<?> wrapper) {
+    public static boolean isNotEmptyOfWrapper(Wrapper wrapper) {
         return !isEmptyOfWrapper(wrapper);
     }
 }

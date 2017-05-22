@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.toolkit.StringUtils;
  * @Date 2016-11-7
  */
 @SuppressWarnings("serial")
-public class EntityWrapper<T> extends Wrapper<T> {
+public class EntityWrapper<T> extends Wrapper {
 
     /**
      * 数据库表映射实体类
