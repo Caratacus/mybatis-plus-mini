@@ -37,6 +37,12 @@ public class Column implements Serializable {
 
     // 默认FACTORY
     public static SqlSessionFactory FACTORY;
+    //转义
+    private boolean escape = true;
+    //字段
+    private String column;
+    //AS
+    private String as;
 
     /**
      * 获取实例
@@ -44,13 +50,6 @@ public class Column implements Serializable {
     public static Column create() {
         return new Column();
     }
-
-    //转义
-    private boolean escape = true;
-    //字段
-    private String column;
-    //AS
-    private String as;
 
     public String getColumn() {
         return column;

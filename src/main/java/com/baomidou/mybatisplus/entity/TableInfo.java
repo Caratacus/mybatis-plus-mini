@@ -94,8 +94,7 @@ public class TableInfo {
      * 获得注入的 SQL Statement
      * </p>
      *
-     * @param sqlMethod
-     *            MybatisPlus 支持 SQL 方法
+     * @param sqlMethod MybatisPlus 支持 SQL 方法
      * @return
      */
     public String getSqlStatement(String sqlMethod) {

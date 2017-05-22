@@ -262,7 +262,7 @@ public class MybatisXMLMapperBuilder extends BaseBuilder {
     }
 
     private ResultMap resultMapElement(XNode resultMapNode) throws Exception {
-        return resultMapElement(resultMapNode, Collections.<ResultMapping> emptyList());
+        return resultMapElement(resultMapNode, Collections.<ResultMapping>emptyList());
     }
 
     private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings) throws Exception {
@@ -293,7 +293,7 @@ public class MybatisXMLMapperBuilder extends BaseBuilder {
         ResultMapResolver resultMapResolver = new ResultMapResolver(builderAssistant, id, typeClass, extend, discriminator, resultMappings, autoMapping);
         try {
             return resultMapResolver.resolve();
-        } catch (IncompleteElementException  e) {
+        } catch (IncompleteElementException e) {
             configuration.addIncompleteResultMap(resultMapResolver);
             throw e;
         }
@@ -379,7 +379,7 @@ public class MybatisXMLMapperBuilder extends BaseBuilder {
         String jdbcType = context.getStringAttribute("jdbcType");
         String nestedSelect = context.getStringAttribute("select");
         String nestedResultMap = context.getStringAttribute("resultMap",
-                processNestedResultMappings(context, Collections.<ResultMapping> emptyList()));
+                processNestedResultMappings(context, Collections.<ResultMapping>emptyList()));
         String notNullColumn = context.getStringAttribute("notNullColumn");
         String columnPrefix = context.getStringAttribute("columnPrefix");
         String typeHandler = context.getStringAttribute("typeHandler");

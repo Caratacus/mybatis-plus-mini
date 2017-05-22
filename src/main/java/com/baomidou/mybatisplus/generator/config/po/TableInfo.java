@@ -55,6 +55,10 @@ public class TableInfo {
         return convert;
     }
 
+    public void setConvert(boolean convert) {
+        this.convert = convert;
+    }
+
     protected void setConvert(StrategyConfig strategyConfig) {
         if (strategyConfig.containsTablePrefix(name)) {
             // 包含前缀
@@ -73,10 +77,6 @@ public class TableInfo {
                 this.convert = true;
             }
         }
-    }
-
-    public void setConvert(boolean convert) {
-        this.convert = convert;
     }
 
     public String getName() {

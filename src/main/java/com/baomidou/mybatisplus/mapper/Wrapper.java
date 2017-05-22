@@ -89,13 +89,6 @@ public abstract class Wrapper<T> implements Serializable {
         return stripSqlInjection(sqlSelect);
     }
 
-    public Wrapper<T> setSqlSelect(String sqlSelect) {
-        if (StringUtils.isNotEmpty(sqlSelect)) {
-            this.sqlSelect = sqlSelect;
-        }
-        return this;
-    }
-
     /**
      * 使用对象封装的setsqlselect
      *
@@ -119,6 +112,13 @@ public abstract class Wrapper<T> implements Serializable {
                 }
             }
             this.sqlSelect = builder.toString();
+        }
+        return this;
+    }
+
+    public Wrapper<T> setSqlSelect(String sqlSelect) {
+        if (StringUtils.isNotEmpty(sqlSelect)) {
+            this.sqlSelect = sqlSelect;
         }
         return this;
     }

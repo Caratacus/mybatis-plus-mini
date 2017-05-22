@@ -26,10 +26,14 @@ package com.baomidou.mybatisplus.enums;
 public enum FieldStrategy {
     IGNORED(0, "ignored"), NOT_NULL(1, "not null"), NOT_EMPTY(2, "not empty");
 
-    /** 主键 */
+    /**
+     * 主键
+     */
     private final int key;
 
-    /** 描述 */
+    /**
+     * 描述
+     */
     private final String desc;
 
     FieldStrategy(final int key, final String desc) {

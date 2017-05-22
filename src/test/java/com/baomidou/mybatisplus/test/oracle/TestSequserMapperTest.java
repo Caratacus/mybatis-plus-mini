@@ -39,9 +39,7 @@ public class TestSequserMapperTest {
 
 
     /**
-     *
      * Test Oracle Sequence
-     *
      */
     public static void main(String[] args) {
 
@@ -79,9 +77,9 @@ public class TestSequserMapperTest {
             rlt = testSequserMapper.insert(u);
         }
         for (TestSequser u : ul) {
-        	System.err.println("\n one.id-------:" + u.getId());
+            System.err.println("\n one.id-------:" + u.getId());
         }
-        
+
         /**
          * 提交
          */

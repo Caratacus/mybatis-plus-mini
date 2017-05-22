@@ -201,14 +201,6 @@ public class GlobalConfiguration implements Cloneable {
         return sqlInjector;
     }
 
-    public IKeyGenerator getKeyGenerator() {
-        return keyGenerator;
-    }
-
-    public void setKeyGenerator(IKeyGenerator keyGenerator) {
-        this.keyGenerator = keyGenerator;
-    }
-
     public static MetaObjectHandler getMetaObjectHandler(Configuration configuration) {
         return getGlobalConfig(configuration).getMetaObjectHandler();
     }
@@ -253,6 +245,14 @@ public class GlobalConfiguration implements Cloneable {
         } finally {
             IOUtils.closeQuietly(connection);
         }
+    }
+
+    public IKeyGenerator getKeyGenerator() {
+        return keyGenerator;
+    }
+
+    public void setKeyGenerator(IKeyGenerator keyGenerator) {
+        this.keyGenerator = keyGenerator;
     }
 
     public DBType getDbType() {

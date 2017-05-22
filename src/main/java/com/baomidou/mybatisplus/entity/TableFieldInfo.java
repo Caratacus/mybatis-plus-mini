@@ -119,10 +119,10 @@ public class TableFieldInfo {
         } else {
             this.fieldStrategy = globalConfig.getFieldStrategy();
         }
-		/*
+        /*
 		 * 保存当前字段的插入忽略，更新忽略值
 		 */
-		this.insertIgnore = tableField.insertIgnore();
+        this.insertIgnore = tableField.insertIgnore();
         this.updateIgnore = tableField.updateIgnore();
     }
 
