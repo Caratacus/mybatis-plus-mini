@@ -40,6 +40,11 @@ public class Condition extends Wrapper {
         return new Condition();
     }
 
+    @Override
+    public Object getEntity() {
+        return null;
+    }
+
     /**
      * SQL 片段
      */

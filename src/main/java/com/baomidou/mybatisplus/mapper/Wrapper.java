@@ -69,22 +69,18 @@ public abstract class Wrapper implements Serializable {
      */
     protected Boolean isWhere;
     /**
-     * 拼接WHERE后应该是AND还是OR
+     * 拼接WHERE后应该是AND还是ORnull
      */
     protected String AND_OR = "AND";
+
+    public abstract Object getEntity();
+
 
     public String getSqlSelect() {
         if (StringUtils.isEmpty(sqlSelect)) {
             return null;
         }
         return stripSqlInjection(sqlSelect);
-    }
-
-    public Wrapper setSqlSelect(String sqlSelect) {
-        if (StringUtils.isNotEmpty(sqlSelect)) {
-            this.sqlSelect = sqlSelect;
-        }
-        return this;
     }
 
     /**
@@ -110,6 +106,13 @@ public abstract class Wrapper implements Serializable {
                 }
             }
             this.sqlSelect = builder.toString();
+        }
+        return this;
+    }
+
+    public Wrapper setSqlSelect(String sqlSelect) {
+        if (StringUtils.isNotEmpty(sqlSelect)) {
+            this.sqlSelect = sqlSelect;
         }
         return this;
     }
