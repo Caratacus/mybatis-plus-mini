@@ -43,6 +43,7 @@ import com.baomidou.mybatisplus.enums.FieldStrategy;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.enums.SqlMethod;
 import com.baomidou.mybatisplus.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.toolkit.SqlReservedWords;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
@@ -71,7 +72,7 @@ public class AutoSqlInjector implements ISqlInjector {
      */
     public void inspectInject(MapperBuilderAssistant builderAssistant, Class<?> mapperClass) {
         String className = mapperClass.toString();
-        Set<String> mapperRegistryCache = GlobalConfiguration.getMapperRegistryCache(builderAssistant.getConfiguration());
+        Set<String> mapperRegistryCache = GlobalConfigUtils.getMapperRegistryCache(builderAssistant.getConfiguration());
         if (!mapperRegistryCache.contains(className)) {
             inject(builderAssistant, mapperClass);
             mapperRegistryCache.add(className);
@@ -194,8 +195,8 @@ public class AutoSqlInjector implements ISqlInjector {
      * @param table
      */
     protected void injectInsertOneSql(boolean selective, Class<?> mapperClass, Class<?> modelClass, TableInfo table) {
-		/*
-		 * INSERT INTO table <trim prefix="(" suffix=")" suffixOverrides=",">
+        /*
+         * INSERT INTO table <trim prefix="(" suffix=")" suffixOverrides=",">
 		 * <if test="xx != null">xx,</if> </trim> <trim prefix="values ("
 		 * suffix=")" suffixOverrides=","> <if test="xx != null">#{xx},</if>
 		 * </trim>
@@ -555,7 +556,7 @@ public class AutoSqlInjector implements ISqlInjector {
      * @return
      */
     protected String sqlWordConvert(String convertStr) {
-        GlobalConfiguration globalConfig = GlobalConfiguration.getGlobalConfig(configuration);
+        GlobalConfiguration globalConfig = GlobalConfigUtils.getGlobalConfig(configuration);
         return SqlReservedWords.convert(globalConfig, convertStr);
     }
 
@@ -850,7 +851,7 @@ public class AutoSqlInjector implements ISqlInjector {
      * </p>
      */
     protected GlobalConfiguration getGlobalConfig() {
-        return GlobalConfiguration.getGlobalConfig(configuration);
+        return GlobalConfigUtils.getGlobalConfig(configuration);
     }
 
 }

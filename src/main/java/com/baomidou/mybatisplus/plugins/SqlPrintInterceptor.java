@@ -50,7 +50,7 @@ import com.baomidou.mybatisplus.toolkit.SystemClock;
         @Signature(type = StatementHandler.class, method = "batch", args = {Statement.class})})
 public class SqlPrintInterceptor implements Interceptor {
 
-    private static final Log logger = LogFactory.getLog(PaginationInterceptor.class);
+    private static final Log logger = LogFactory.getLog(SqlPrintInterceptor.class);
 
     private boolean format = false;
 

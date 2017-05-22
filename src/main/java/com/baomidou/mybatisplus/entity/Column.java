@@ -20,6 +20,7 @@ import java.io.Serializable;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.baomidou.mybatisplus.enums.DBType;
+import com.baomidou.mybatisplus.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
 
 /**
@@ -67,7 +68,7 @@ public class Column implements Serializable {
         }
         String quote = null;
         if (isEscape() && FACTORY != null) {
-            GlobalConfiguration globalConfig = GlobalConfiguration.getGlobalConfig(FACTORY.getConfiguration());
+            GlobalConfiguration globalConfig = GlobalConfigUtils.getGlobalConfig(FACTORY.getConfiguration());
             quote = globalConfig.getIdentifierQuote() == null ? DBType.getQuote(globalConfig.getDbType()) : globalConfig.getIdentifierQuote();
         }
         return AS + (StringUtils.isNotEmpty(quote) ? String.format(quote, as) : as);

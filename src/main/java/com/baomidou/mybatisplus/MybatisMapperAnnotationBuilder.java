@@ -91,8 +91,8 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
-import com.baomidou.mybatisplus.entity.GlobalConfiguration;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.toolkit.GlobalConfigUtils;
 
 /**
  * <p>
@@ -158,7 +158,7 @@ public class MybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
      */
     private void inspectInject(boolean flag) {
         if (!flag && BaseMapper.class.isAssignableFrom(type)) {
-            GlobalConfiguration.getSqlInjector(configuration).inspectInject(assistant, type);
+            GlobalConfigUtils.getSqlInjector(configuration).inspectInject(assistant, type);
         }
     }
 

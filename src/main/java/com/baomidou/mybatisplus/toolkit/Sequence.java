@@ -23,7 +23,6 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.plugins.SqlExplainInterceptor;
 
 /**
  * <p>
@@ -36,7 +35,7 @@ import com.baomidou.mybatisplus.plugins.SqlExplainInterceptor;
  */
 public class Sequence {
 
-    private static final Log logger = LogFactory.getLog(SqlExplainInterceptor.class);
+    private static final Log logger = LogFactory.getLog(Sequence.class);
 
     /* 时间起始标记点，作为基准，一般取系统的最近时间（一旦确定不能变动） */
     private final long twepoch = 1288834974657L;
@@ -95,7 +94,7 @@ public class Sequence {
             mpid.append(name.split("@")[0]);
         }
         /*
-		 * MAC + PID 的 hashcode 获取16个低位
+         * MAC + PID 的 hashcode 获取16个低位
 		 */
         return (mpid.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
     }

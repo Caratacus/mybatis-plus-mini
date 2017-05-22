@@ -42,6 +42,7 @@ import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.baomidou.mybatisplus.toolkit.JdbcUtils;
 import com.baomidou.mybatisplus.toolkit.JsqlParserUtils;
 import com.baomidou.mybatisplus.toolkit.PluginUtils;
+import com.baomidou.mybatisplus.toolkit.StringUtils;
 
 /**
  * <p>
@@ -80,8 +81,7 @@ public class PaginationInterceptor implements Interceptor {
         if (rowBounds instanceof Pagination) {
             Pagination page = (Pagination) rowBounds;
             if (page.isSearchCount()) {
-                String jsql = JsqlParserUtils.jsqlparserCount(originalSql);
-                this.queryTotal(jsql, mappedStatement, boundSql, page, connection);
+                this.queryTotal(JsqlParserUtils.jsqlparserCount(originalSql), mappedStatement, boundSql, page, connection);
                 if (page.getTotal() <= 0) {
                     return invocation.proceed();
                 }
@@ -139,9 +139,16 @@ public class PaginationInterceptor implements Interceptor {
     }
 
     @Override
-    public void setProperties(Properties properties) {
-
+    public void setProperties(Properties prop) {
+        String overflowCurrent = prop.getProperty("overflowCurrent");
+        if (StringUtils.isNotEmpty(overflowCurrent)) {
+            this.overflowCurrent = Boolean.TRUE.toString().equals(overflowCurrent);
+        }
     }
 
+
+    public void setOverflowCurrent(boolean overflowCurrent) {
+        this.overflowCurrent = overflowCurrent;
+    }
 
 }

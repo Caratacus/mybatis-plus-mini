@@ -43,6 +43,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.util.ResourceUtils;
 
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
+import com.baomidou.mybatisplus.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.toolkit.SystemClock;
 
 /**
@@ -63,14 +64,9 @@ public class MybatisMapperRefresh implements Runnable {
      */
     private static final Map<String, List<Resource>> jarMapper = new HashMap<>();
     private SqlSessionFactory sqlSessionFactory;
-    @Deprecated
     private Resource[] mapperLocations;
     private Long beforeTime = 0L;
     private Configuration configuration;
-    /**
-     * 是否开启刷新mapper
-     */
-    private boolean enabled;
     /**
      * xml文件目录
      */
@@ -91,15 +87,12 @@ public class MybatisMapperRefresh implements Runnable {
      * @param sqlSessionFactory
      * @param delaySeconds
      * @param sleepSeconds
-     * @param enabled
      */
-    @Deprecated
     public MybatisMapperRefresh(Resource[] mapperLocations, SqlSessionFactory sqlSessionFactory, int delaySeconds,
-                                int sleepSeconds, boolean enabled) {
+                                int sleepSeconds) {
         this.mapperLocations = mapperLocations.clone();
         this.sqlSessionFactory = sqlSessionFactory;
         this.delaySeconds = delaySeconds;
-        this.enabled = enabled;
         this.sleepSeconds = sleepSeconds;
         this.configuration = sqlSessionFactory.getConfiguration();
         this.run();
@@ -110,20 +103,17 @@ public class MybatisMapperRefresh implements Runnable {
      *
      * @param mapperLocations
      * @param sqlSessionFactory
-     * @param enabled
      */
     @Deprecated
-    public MybatisMapperRefresh(Resource[] mapperLocations, SqlSessionFactory sqlSessionFactory, boolean enabled) {
+    public MybatisMapperRefresh(Resource[] mapperLocations, SqlSessionFactory sqlSessionFactory) {
         this.mapperLocations = mapperLocations.clone();
         this.sqlSessionFactory = sqlSessionFactory;
-        this.enabled = enabled;
         this.configuration = sqlSessionFactory.getConfiguration();
         this.run();
     }
 
-    public MybatisMapperRefresh(SqlSessionFactory sqlSessionFactory, boolean enabled) throws Exception {
+    public MybatisMapperRefresh(SqlSessionFactory sqlSessionFactory) throws Exception {
         this.sqlSessionFactory = sqlSessionFactory;
-        this.enabled = enabled;
         this.configuration = sqlSessionFactory.getConfiguration();
         this.run();
     }
@@ -132,80 +122,77 @@ public class MybatisMapperRefresh implements Runnable {
         this.sqlSessionFactory = sqlSessionFactory;
         this.delaySeconds = delaySeconds;
         this.sleepSeconds = sleepSeconds;
-        this.enabled = enabled;
         this.configuration = sqlSessionFactory.getConfiguration();
         this.run();
     }
 
     public void run() {
-        final GlobalConfiguration globalConfig = GlobalConfiguration.getGlobalConfig(configuration);
+        final GlobalConfiguration globalConfig = GlobalConfigUtils.getGlobalConfig(configuration);
         /*
          * 启动 XML 热加载
 		 */
-        if (enabled) {
-            beforeTime = SystemClock.now();
-            final MybatisMapperRefresh runnable = this;
-            new Thread(() -> {
-                if (fileSet == null) {
-                    fileSet = new HashSet<>();
-                    for (Resource mapperLocation : mapperLocations) {
-                        try {
-                            if (ResourceUtils.isJarURL(mapperLocation.getURL())) {
-                                String key = new UrlResource(ResourceUtils.extractJarFileURL(mapperLocation.getURL()))
-                                        .getFile().getPath();
-                                fileSet.add(key);
-                                if (jarMapper.get(key) != null) {
-                                    jarMapper.get(key).add(mapperLocation);
-                                } else {
-                                    List<Resource> resourcesList = new ArrayList<>();
-                                    resourcesList.add(mapperLocation);
-                                    jarMapper.put(key, resourcesList);
-                                }
+        beforeTime = SystemClock.now();
+        final MybatisMapperRefresh runnable = this;
+        new Thread(() -> {
+            if (fileSet == null) {
+                fileSet = new HashSet<>();
+                for (Resource mapperLocation : mapperLocations) {
+                    try {
+                        if (ResourceUtils.isJarURL(mapperLocation.getURL())) {
+                            String key = new UrlResource(ResourceUtils.extractJarFileURL(mapperLocation.getURL()))
+                                    .getFile().getPath();
+                            fileSet.add(key);
+                            if (jarMapper.get(key) != null) {
+                                jarMapper.get(key).add(mapperLocation);
                             } else {
-                                fileSet.add(mapperLocation.getFile().getPath());
+                                List<Resource> resourcesList = new ArrayList<>();
+                                resourcesList.add(mapperLocation);
+                                jarMapper.put(key, resourcesList);
                             }
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
+                        } else {
+                            fileSet.add(mapperLocation.getFile().getPath());
                         }
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
                     }
                 }
+            }
+            try {
+                Thread.sleep(delaySeconds * 1000);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
+            do {
                 try {
-                    Thread.sleep(delaySeconds * 1000);
+                    for (String filePath : fileSet) {
+                        File file = new File(filePath);
+                        if (file.isFile() && file.lastModified() > beforeTime) {
+                            globalConfig.setRefresh(true);
+                            List<Resource> removeList = jarMapper.get(filePath);
+                            if (removeList != null && !removeList.isEmpty()) {// 如果是jar包中的xml，将刷新jar包中存在的所有xml，后期再修改加载jar中修改过后的xml
+                                for (Resource resource : removeList) {
+                                    runnable.refresh(resource);
+                                }
+                            } else {
+                                runnable.refresh(new FileSystemResource(file));
+                            }
+                        }
+                    }
+                    if (globalConfig.isRefresh()) {
+                        beforeTime = SystemClock.now();
+                    }
+                    globalConfig.setRefresh(true);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                try {
+                    Thread.sleep(sleepSeconds * 1000);
                 } catch (InterruptedException interruptedException) {
                     interruptedException.printStackTrace();
                 }
-                do {
-                    try {
-                        for (String filePath : fileSet) {
-                            File file = new File(filePath);
-                            if (file.isFile() && file.lastModified() > beforeTime) {
-                                globalConfig.setRefresh(true);
-                                List<Resource> removeList = jarMapper.get(filePath);
-                                if (removeList != null && !removeList.isEmpty()) {// 如果是jar包中的xml，将刷新jar包中存在的所有xml，后期再修改加载jar中修改过后的xml
-                                    for (Resource resource : removeList) {
-                                        runnable.refresh(resource);
-                                    }
-                                } else {
-                                    runnable.refresh(new FileSystemResource(file));
-                                }
-                            }
-                        }
-                        if (globalConfig.isRefresh()) {
-                            beforeTime = SystemClock.now();
-                        }
-                        globalConfig.setRefresh(true);
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                    try {
-                        Thread.sleep(sleepSeconds * 1000);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
 
-                } while (true);
-            }, "mybatis-plus MapperRefresh").start();
-        }
+            } while (true);
+        }, "mybatis-plus MapperRefresh").start();
     }
 
     /**

@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -117,10 +118,7 @@ public class ReflectionKit {
             return false;
         }
         Class<?> cls = bean.getClass();
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(cls);
-        if (null == tableInfo) {
-            throw new MybatisPlusException(String.format("Error: Could Not find %s in TableInfo Cache. ", cls.getSimpleName()));
-        }
+        TableInfo tableInfo = getTableInfoAsSuperClass(cls);
         boolean result = false;
         List<TableFieldInfo> fieldList = tableInfo.getFieldList();
         for (TableFieldInfo tableFieldInfo : fieldList) {
@@ -240,6 +238,24 @@ public class ReflectionKit {
             }
         }
         return fieldList;
+    }
+
+    /**
+     * 通过自身的class或者父类class,获取TableInfo
+     *
+     * @param cls
+     * @return
+     */
+    private static TableInfo getTableInfoAsSuperClass(Class<?> cls) {
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(cls);
+        if (Objects.isNull(tableInfo)) {
+            if (Object.class.equals(cls)) {
+                throw new MybatisPlusException(String.format("Error: Could Not find %s in TableInfo Cache. ", cls.getSimpleName()));
+            } else {
+                getTableInfoAsSuperClass(cls.getSuperclass());
+            }
+        }
+        return tableInfo;
     }
 
 }

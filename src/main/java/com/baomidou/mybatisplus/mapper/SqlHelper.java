@@ -24,10 +24,10 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import com.baomidou.mybatisplus.entity.GlobalConfiguration;
 import com.baomidou.mybatisplus.entity.TableInfo;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
 
 /**
@@ -63,7 +63,7 @@ public class SqlHelper {
      * @return SqlSession
      */
     public static SqlSession sqlSessionBatch(Class<?> clazz) {
-        return GlobalConfiguration.currentSessionFactory(clazz).openSession(ExecutorType.BATCH);
+        return GlobalConfigUtils.currentSessionFactory(clazz).openSession(ExecutorType.BATCH);
     }
 
     /**
@@ -75,9 +75,9 @@ public class SqlHelper {
     private static SqlSession getSqlSession(Class<?> clazz) {
         SqlSession session = null;
         try {
-            SqlSessionFactory sqlSessionFactory = GlobalConfiguration.currentSessionFactory(clazz);
+            SqlSessionFactory sqlSessionFactory = GlobalConfigUtils.currentSessionFactory(clazz);
             Configuration configuration = sqlSessionFactory.getConfiguration();
-            session = GlobalConfiguration.getGlobalConfig(configuration).getSqlSession();
+            session = GlobalConfigUtils.getGlobalConfig(configuration).getSqlSession();
         } catch (Exception e) {
             // ignored
         }
@@ -95,7 +95,7 @@ public class SqlHelper {
      */
     public static SqlSession sqlSession(Class<?> clazz, boolean autoCommit) {
         SqlSession sqlSession = getSqlSession(clazz);
-        return (sqlSession != null) ? sqlSession : GlobalConfiguration.currentSessionFactory(clazz).openSession(autoCommit);
+        return (sqlSession != null) ? sqlSession : GlobalConfigUtils.currentSessionFactory(clazz).openSession(autoCommit);
     }
 
     /**

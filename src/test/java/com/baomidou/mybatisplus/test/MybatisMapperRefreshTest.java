@@ -53,7 +53,7 @@ public class MybatisMapperRefreshTest {
         mf.setGlobalConfig(new GlobalConfiguration(new MySqlInjector()));
         Resource[] resource = new ClassPathResource[]{new ClassPathResource("mysql/UserMapper.xml")};
         SqlSessionFactory sessionFactory = mf.build(in);
-        new MybatisMapperRefresh(resource, sessionFactory, 0, 5, true);
+        new MybatisMapperRefresh(resource, sessionFactory, 0, 5);
         boolean isReturn = false;
         SqlSession session = null;
         while (!isReturn) {

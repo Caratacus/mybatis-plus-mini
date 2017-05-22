@@ -202,7 +202,7 @@ public class UserMapperTest {
         sleep();
 
 		/*
-		 * <p> 修改 </p>
+         * <p> 修改 </p>
 		 *
 		 * updateById 是从 BaseMapper 中继承而来的，UserMapper.xml中并没有申明改sql
 		 */
@@ -238,7 +238,7 @@ public class UserMapperTest {
         sleep();
 
 		/*
-		 * <p> 查询 </p>
+         * <p> 查询 </p>
 		 */
         System.err.println("\n------------------selectById----------------------");
         User user = userMapper.selectById(12L);
