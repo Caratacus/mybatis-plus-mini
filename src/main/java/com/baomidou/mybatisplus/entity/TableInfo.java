@@ -84,10 +84,6 @@ public class TableInfo {
      * MybatisConfiguration 标记 (Configuration内存地址值)
      */
     private String configMark;
-    /**
-     * 是否开启逻辑删除
-     */
-    private boolean logicDelete = false;
 
     /**
      * <p>
@@ -186,16 +182,5 @@ public class TableInfo {
             throw new MybatisPlusException("Error: You need Initialize MybatisConfiguration !");
         }
         this.configMark = configuration.toString();
-    }
-
-    public boolean isLogicDelete() {
-        return logicDelete;
-    }
-
-    public void setLogicDelete(boolean logicDelete) {
-        if (logicDelete) {
-            // 非 true 不设置，默认 false
-            this.logicDelete = logicDelete;
-        }
     }
 }

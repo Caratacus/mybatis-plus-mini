@@ -65,16 +65,6 @@ public class TableFieldInfo {
     private FieldStrategy fieldStrategy = FieldStrategy.NOT_NULL;
 
     /**
-     * 逻辑删除值
-     */
-    private String logicDeleteValue;
-
-    /**
-     * 逻辑未删除值
-     */
-    private String logicNotDeleteValue;
-
-    /**
      * 插入忽略
      */
     private boolean insertIgnore = false;
@@ -192,29 +182,6 @@ public class TableFieldInfo {
 
     public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
-    }
-
-    /**
-     * 是否开启逻辑删除
-     */
-    public boolean isLogicDelete() {
-        return StringUtils.isNotEmpty(logicDeleteValue);
-    }
-
-    public String getLogicDeleteValue() {
-        return logicDeleteValue;
-    }
-
-    public void setLogicDeleteValue(String logicDeleteValue) {
-        this.logicDeleteValue = logicDeleteValue;
-    }
-
-    public String getLogicNotDeleteValue() {
-        return logicNotDeleteValue;
-    }
-
-    public void setLogicNotDeleteValue(String logicNotDeleteValue) {
-        this.logicNotDeleteValue = logicNotDeleteValue;
     }
 
     public boolean isInsertIgnore() {
