@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.baomidou.mybatisplus.entity;
+package com.baomidou.mybatisplus.plugins;
 
 import org.apache.ibatis.reflection.MetaObject;
 
