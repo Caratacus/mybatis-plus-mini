@@ -27,16 +27,8 @@ import com.baomidou.mybatisplus.toolkit.StringUtils;
  * @Date 2017-05-22
  */
 public enum DBType {
-    MYSQL,
-    ORACLE,
-    DB2,
-    H2,
-    HSQL,
-    SQLITE,
-    POSTGRE,
-    SQLSERVER2005,
-    SQLSERVER;
 
+    MYSQL, ORACLE, DB2, H2, HSQL, SQLITE, POSTGRE, SQLSERVER2005, SQLSERVER;
 
     /**
      * <p>
@@ -58,7 +50,12 @@ public enum DBType {
         throw new MybatisPlusException("Error: Unknown database type, or do not support changing database!\n");
     }
 
-
+    /**
+     * 获取数据库转义字符
+     *
+     * @param dbType
+     * @return
+     */
     public static String getQuote(DBType dbType) {
         switch (dbType) {
             case H2:

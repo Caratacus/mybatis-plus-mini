@@ -273,7 +273,7 @@ public class GlobalConfiguration implements Cloneable {
         return idType;
     }
 
-    public void setIdType(int idType) {
+    public void setIdType(String idType) {
         this.idType = IdType.getIdType(idType);
     }
 
@@ -305,7 +305,7 @@ public class GlobalConfiguration implements Cloneable {
         return fieldStrategy;
     }
 
-    public void setFieldStrategy(int fieldStrategy) {
+    public void setFieldStrategy(String fieldStrategy) {
         this.fieldStrategy = FieldStrategy.getFieldStrategy(fieldStrategy);
     }
 

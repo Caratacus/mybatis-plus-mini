@@ -15,48 +15,33 @@
  */
 package com.baomidou.mybatisplus.enums;
 
+import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
+
 /**
  * <p>
  * 字段策略枚举类
  * </p>
  *
- * @author hubin
- * @Date 2016-09-09
+ * @author Caratacus
+ * @Date 2017-05-22
  */
 public enum FieldStrategy {
-    IGNORED(0, "ignored"), NOT_NULL(1, "not null"), NOT_EMPTY(2, "not empty");
+    IGNORED, NOT_NULL, NOT_EMPTY;
 
     /**
-     * 主键
+     * 获取枚举
+     *
+     * @param fieldStrategy
+     * @return
      */
-    private final int key;
-
-    /**
-     * 描述
-     */
-    private final String desc;
-
-    FieldStrategy(final int key, final String desc) {
-        this.key = key;
-        this.desc = desc;
-    }
-
-    public static FieldStrategy getFieldStrategy(int key) {
-        FieldStrategy[] fss = FieldStrategy.values();
-        for (FieldStrategy fs : fss) {
-            if (fs.getKey() == key) {
-                return fs;
+    public static FieldStrategy getFieldStrategy(String fieldStrategy) {
+        FieldStrategy[] fieldStrategies = FieldStrategy.values();
+        for (FieldStrategy strategy : fieldStrategies) {
+            if (strategy.name().equalsIgnoreCase(fieldStrategy)) {
+                return strategy;
             }
         }
-        return FieldStrategy.NOT_NULL;
-    }
-
-    public int getKey() {
-        return this.key;
-    }
-
-    public String getDesc() {
-        return this.desc;
+        throw new MybatisPlusException("Error: Unknown fieldStrategy type, or do not support changing fieldStrategy!\n");
     }
 
 }

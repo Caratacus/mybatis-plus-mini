@@ -187,13 +187,13 @@ public class MybatisDefaultParameterHandler extends DefaultParameterHandler {
         /* 自定义元对象填充控制器 */
         MetaObject metaObject = ms.getConfiguration().newMetaObject(parameterObject);
         if (ms.getSqlCommandType() == SqlCommandType.INSERT) {
-            if (tableInfo.getIdType().getKey() >= 2) {
+            if (IdType.ID_WORKER.equals(tableInfo.getIdType()) || IdType.UUID.equals(tableInfo.getIdType())) {
                 Object idValue = metaObject.getValue(tableInfo.getKeyProperty());
                 /* 自定义 ID */
                 if (StringUtils.checkValNull(idValue)) {
-                    if (tableInfo.getIdType() == IdType.ID_WORKER) {
+                    if (IdType.ID_WORKER.equals(tableInfo.getIdType())) {
                         metaObject.setValue(tableInfo.getKeyProperty(), IdWorker.getId());
-                    } else if (tableInfo.getIdType() == IdType.UUID) {
+                    } else if (IdType.UUID.equals(tableInfo.getIdType())) {
                         metaObject.setValue(tableInfo.getKeyProperty(), IdWorker.get32UUID());
                     }
                 }

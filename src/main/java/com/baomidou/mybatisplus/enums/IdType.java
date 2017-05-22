@@ -15,6 +15,8 @@
  */
 package com.baomidou.mybatisplus.enums;
 
+import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
+
 /**
  * <p>
  * 生成ID类型枚举类
@@ -24,50 +26,43 @@ package com.baomidou.mybatisplus.enums;
  * @Date 2015-11-10
  */
 public enum IdType {
-    AUTO(0, "数据库ID自增"), INPUT(1, "用户输入ID"),
-
-    /* 以下2种类型、只有当插入对象ID 为空，才自动填充。 */
-    ID_WORKER(2, "全局唯一ID"), UUID(3, "全局唯一ID"), NONE(4, "该类型为未设置主键类型");
-
     /**
-     * 主键
+     * 数据库ID自增
      */
-    private final int key;
-
+    AUTO,
     /**
-     * 描述
+     * 用户输入ID
      */
-    private final String desc;
-
-    IdType(final int key, final String desc) {
-        this.key = key;
-        this.desc = desc;
-    }
+    INPUT,
+    /**
+     * ID_WORKER
+     */
+    ID_WORKER,
+    /**
+     * UUID
+     */
+    UUID,
+    /**
+     * 未设置主键类型
+     */
+    NONE;
 
     /**
      * <p>
-     * 主键策略 （默认 ID_WORKER）
+     * 主键策略
      * </p>
      *
      * @param idType ID 策略类型
      * @return
      */
-    public static IdType getIdType(int idType) {
-        IdType[] its = IdType.values();
-        for (IdType it : its) {
-            if (it.getKey() == idType) {
-                return it;
+    public static IdType getIdType(String idType) {
+        IdType[] idTypes = IdType.values();
+        for (IdType type : idTypes) {
+            if (type.name().equalsIgnoreCase(idType)) {
+                return type;
             }
         }
-        return ID_WORKER;
-    }
-
-    public int getKey() {
-        return this.key;
-    }
-
-    public String getDesc() {
-        return this.desc;
+        throw new MybatisPlusException("Error: Unknown IdType type, or do not support changing IdType!\n");
     }
 
 }

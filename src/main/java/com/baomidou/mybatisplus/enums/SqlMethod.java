@@ -39,26 +39,11 @@ public enum SqlMethod {
     DELETE_BATCH_BY_IDS("deleteBatchIds", "根据ID集合，批量删除数据", "<script>DELETE FROM %s WHERE %s IN (%s)</script>"),
 
     /**
-     * 逻辑删除
-     */
-    LOGIC_DELETE_BY_ID("deleteById", "根据ID 逻辑删除一条数据", "<script>UPDATE %s %s WHERE %s=#{%s}</script>"),
-    LOGIC_DELETE_BY_MAP("deleteByMap", "根据columnMap 条件逻辑删除记录", "<script>UPDATE %s %s %s</script>"),
-    LOGIC_DELETE("delete", "根据 entity 条件逻辑删除记录", "<script>UPDATE %s %s %s</script>"),
-    LOGIC_DELETE_BATCH_BY_IDS("deleteBatchIds", "根据ID集合，批量逻辑删除数据", "<script>UPDATE %s %s WHERE %s IN (%s)</script>"),
-
-    /**
      * 修改
      */
     UPDATE_BY_ID("updateById", "根据ID 选择修改数据", "<script>UPDATE %s %s WHERE %s=#{%s}</script>"),
     UPDATE_ALL_COLUMN_BY_ID("updateAllColumnById", "根据ID 修改全部数据", "<script>UPDATE %s %s WHERE %s=#{%s}</script>"),
     UPDATE("update", "根据 whereEntity 条件，更新记录", "<script>UPDATE %s %s %s</script>"),
-
-    /**
-     * 逻辑删除 -> 修改
-     */
-    LOGIC_UPDATE_BY_ID("updateById", "根据ID 修改数据", "<script>UPDATE %s %s WHERE %s=#{%s} %s</script>"),
-    LOGIC_UPDATE_ALL_COLUMN_BY_ID("updateAllColumnById", "根据ID 选择修改数据", "<script>UPDATE %s %s WHERE %s=#{%s} %s</script>"),
-
 
     /**
      * 查询
@@ -72,13 +57,7 @@ public enum SqlMethod {
     SELECT_PAGE("selectPage", "查询满足条件所有数据（并翻页）", "<script>SELECT %s FROM %s %s</script>"),
     SELECT_MAPS("selectMaps", "查询满足条件所有数据", "<script>SELECT %s FROM %s %s</script>"),
     SELECT_MAPS_PAGE("selectMapsPage", "查询满足条件所有数据（并翻页）", "<script>SELECT %s FROM %s %s</script>"),
-    SELECT_OBJS("selectObjs", "查询满足条件所有数据", "<script>SELECT %s FROM %s %s</script>"),
-
-    /**
-     * 逻辑删除 -> 查询
-     */
-    LOGIC_SELECT_BY_ID("selectById", "根据ID 查询一条数据", "SELECT %s FROM %s WHERE %s=#{%s} %s"),
-    LOGIC_SELECT_BATCH_BY_IDS("selectBatchIds", "根据ID集合，批量查询数据", "<script>SELECT %s FROM %s WHERE %s IN (%s) %s</script>");
+    SELECT_OBJS("selectObjs", "查询满足条件所有数据", "<script>SELECT %s FROM %s %s</script>");
 
     private final String method;
     private final String desc;

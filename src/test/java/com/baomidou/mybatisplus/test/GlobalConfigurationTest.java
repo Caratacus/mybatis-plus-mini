@@ -27,6 +27,7 @@ import org.junit.Assert;
 
 import com.baomidou.mybatisplus.MybatisSessionFactoryBuilder;
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
+import com.baomidou.mybatisplus.enums.FieldStrategy;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.test.mysql.entity.NotPK;
 import com.baomidou.mybatisplus.test.mysql.entity.Test;
@@ -50,7 +51,7 @@ public class GlobalConfigurationTest {
     public static void main(String[] args) {
         GlobalConfiguration global = GlobalConfiguration.defaults();
         // 设置全局校验机制为FieldStrategy.Empty
-        global.setFieldStrategy(2);
+        global.setFieldStrategy(FieldStrategy.NOT_EMPTY.name());
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/mybatis-plus?characterEncoding=UTF-8");
