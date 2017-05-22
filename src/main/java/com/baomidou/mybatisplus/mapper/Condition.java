@@ -36,14 +36,6 @@ public class Condition extends Wrapper {
     /**
      * 获取实例
      */
-    @Deprecated
-    public static Condition instance() {
-        return Condition.create();
-    }
-
-    /**
-     * 获取实例
-     */
     public static Condition create() {
         return new Condition();
     }

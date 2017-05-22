@@ -15,9 +15,7 @@
  */
 package com.baomidou.mybatisplus.toolkit;
 
-import com.baomidou.mybatisplus.entity.CountOptimize;
 import com.baomidou.mybatisplus.enums.SqlLike;
-import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 
 /**
  * <p>
@@ -31,34 +29,6 @@ public class SqlUtils {
 
     public static final String SQL_BASE_COUNT = "SELECT COUNT(1) FROM ( %s ) TOTAL";
     private final static SqlFormatter sqlFormatter = new SqlFormatter();
-
-    /**
-     * 获取CountOptimize
-     *
-     * @param originalSql 需要计算Count SQL
-     * @return CountOptimize
-     */
-    public static CountOptimize getCountOptimize(String originalSql) {
-        return JsqlParserUtils.jsqlparserCount(originalSql);
-    }
-
-    /**
-     * 查询SQL拼接Order By
-     *
-     * @param originalSql 需要拼接的SQL
-     * @param page        page对象
-     * @param orderBy     是否需要拼接Order By
-     * @return
-     */
-    public static String concatOrderBy(String originalSql, Pagination page, boolean orderBy) {
-        if (orderBy && StringUtils.isNotEmpty(page.getOrderByField()) && page.isOpenSort()) {
-            StringBuilder buildSql = new StringBuilder(originalSql);
-            buildSql.append(" ORDER BY ").append(page.getOrderByField());
-            buildSql.append(page.isAsc() ? " ASC " : " DESC ");
-            return buildSql.toString();
-        }
-        return originalSql;
-    }
 
     /**
      * 格式sql

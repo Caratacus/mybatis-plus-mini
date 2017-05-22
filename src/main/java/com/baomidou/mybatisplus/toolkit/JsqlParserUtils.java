@@ -18,8 +18,6 @@ package com.baomidou.mybatisplus.toolkit;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.baomidou.mybatisplus.entity.CountOptimize;
-
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.LongValue;
@@ -50,8 +48,7 @@ public class JsqlParserUtils {
      * @param originalSql selectSQL
      * @return
      */
-    public static CountOptimize jsqlparserCount(String originalSql) {
-        CountOptimize countOptimize = CountOptimize.newInstance();
+    public static String jsqlparserCount(String originalSql) {
         String sqlCount;
         try {
             Select selectStatement = (Select) CCJSqlParserUtil.parse(originalSql);
@@ -63,13 +60,11 @@ public class JsqlParserUtils {
             // 添加包含groupby 不去除orderby
             if (CollectionUtils.isEmpty(groupBy) && CollectionUtils.isNotEmpty(orderBy)) {
                 plainSelect.setOrderByElements(null);
-                countOptimize.setOrderBy(false);
             }
             // 包含 distinct、groupBy不优化
             if (distinct != null || CollectionUtils.isNotEmpty(groupBy)) {
                 sqlCount = String.format(SqlUtils.SQL_BASE_COUNT, selectStatement.toString());
-                countOptimize.setCountSQL(sqlCount);
-                return countOptimize;
+                return sqlCount;
             }
             List<SelectItem> selectCount = countSelectItem();
             plainSelect.setSelectItems(selectCount);
@@ -77,8 +72,7 @@ public class JsqlParserUtils {
         } catch (Exception e) {
             sqlCount = String.format(SqlUtils.SQL_BASE_COUNT, originalSql);
         }
-        countOptimize.setCountSQL(sqlCount);
-        return countOptimize;
+        return sqlCount;
     }
 
     /**

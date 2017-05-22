@@ -302,7 +302,6 @@ public abstract class Model<T extends Model> implements Serializable {
      */
     public Page<T> selectPage(Page<T> page, Wrapper wrapper) {
         Map<String, Object> map = new HashMap<>();
-        SqlHelper.fillWrapper(page, wrapper);
         map.put("ew", wrapper);
         List<T> tl = sqlSession().selectList(sqlStatement(SqlMethod.SELECT_PAGE), map, page);
         page.setRecords(tl);

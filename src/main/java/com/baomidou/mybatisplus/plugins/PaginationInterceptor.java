@@ -37,13 +37,12 @@ import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import com.baomidou.mybatisplus.MybatisDefaultParameterHandler;
-import com.baomidou.mybatisplus.entity.CountOptimize;
 import com.baomidou.mybatisplus.enums.DBType;
 import com.baomidou.mybatisplus.plugins.pagination.DialectFactory;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.baomidou.mybatisplus.toolkit.JdbcUtils;
+import com.baomidou.mybatisplus.toolkit.JsqlParserUtils;
 import com.baomidou.mybatisplus.toolkit.PluginUtils;
-import com.baomidou.mybatisplus.toolkit.SqlUtils;
 
 /**
  * <p>
@@ -83,17 +82,14 @@ public class PaginationInterceptor implements Interceptor {
         DBType dbType = JdbcUtils.getDbType(connection.getMetaData().getURL());
         if (rowBounds instanceof Pagination) {
             Pagination page = (Pagination) rowBounds;
-            boolean orderBy = true;
             if (page.isSearchCount()) {
-                CountOptimize countOptimize = SqlUtils.getCountOptimize(originalSql);
-                orderBy = countOptimize.isOrderBy();
-                this.queryTotal(countOptimize.getCountSQL(), mappedStatement, boundSql, page, connection);
+                String jsql = JsqlParserUtils.jsqlparserCount(originalSql);
+                this.queryTotal(jsql, mappedStatement, boundSql, page, connection);
                 if (page.getTotal() <= 0) {
                     return invocation.proceed();
                 }
             }
-            String buildSql = SqlUtils.concatOrderBy(originalSql, page, orderBy);
-            originalSql = DialectFactory.buildPaginationSql(page, buildSql, dbType, null);
+            originalSql = DialectFactory.buildPaginationSql(page, originalSql, dbType, null);
         } else {
             // support physical Pagination for RowBounds
             originalSql = DialectFactory.buildPaginationSql(rowBounds, originalSql, dbType, null);

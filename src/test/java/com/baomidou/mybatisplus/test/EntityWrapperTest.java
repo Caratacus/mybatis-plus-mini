@@ -75,7 +75,7 @@ public class EntityWrapperTest {
 
     @Test
     public void test12() {
-		/*
+        /*
 		 * 实体带where orderby
 		 */
         ew.setEntity(new User(1));

@@ -148,7 +148,7 @@ public class AutoSqlInjector implements ISqlInjector {
         this.injectSelectMapsSql(SqlMethod.SELECT_MAPS, mapperClass, modelClass, table);
         this.injectSelectMapsSql(SqlMethod.SELECT_MAPS_PAGE, mapperClass, modelClass, table);
         this.injectSelectObjsSql(SqlMethod.SELECT_OBJS, mapperClass, modelClass, table);
-		/* 自定义方法 */
+        /* 自定义方法 */
         this.inject(configuration, builderAssistant, mapperClass, modelClass, table);
     }
 

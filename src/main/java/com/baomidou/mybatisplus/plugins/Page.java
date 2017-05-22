@@ -17,7 +17,6 @@ package com.baomidou.mybatisplus.plugins;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 
@@ -38,11 +37,6 @@ public class Page<T> extends Pagination {
      */
     private List<T> records = Collections.emptyList();
 
-    /**
-     * 查询参数
-     */
-    private Map<String, Object> condition;
-
     public Page() {
         /* 注意，传入翻页参数 */
     }
@@ -51,25 +45,12 @@ public class Page<T> extends Pagination {
         super(current, size);
     }
 
-    public Page(int current, int size, String orderByField) {
-        super(current, size);
-        this.setOrderByField(orderByField);
-    }
-
     public List<T> getRecords() {
         return records;
     }
 
     public void setRecords(List<T> records) {
         this.records = records;
-    }
-
-    public Map<String, Object> getCondition() {
-        return condition;
-    }
-
-    public void setCondition(Map<String, Object> condition) {
-        this.condition = condition;
     }
 
     @Override

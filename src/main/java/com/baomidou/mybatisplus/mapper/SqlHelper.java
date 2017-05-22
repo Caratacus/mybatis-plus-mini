@@ -27,7 +27,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
 import com.baomidou.mybatisplus.entity.TableInfo;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
 
@@ -154,24 +153,6 @@ public class SqlHelper {
             return list.get(0);
         }
         return null;
-    }
-
-    /**
-     * 填充Wrapper
-     *
-     * @param page
-     * @param wrapper
-     */
-    public static void fillWrapper(Page<?> page, Wrapper wrapper) {
-        if (null == page) {
-            return;
-        }
-        if (isNotEmptyOfWrapper(wrapper)) {
-            if (page.isOpenSort()) {
-                wrapper.orderBy(page.getOrderByField(), page.isAsc());
-            }
-            wrapper.allEq(page.getCondition());
-        }
     }
 
     /**

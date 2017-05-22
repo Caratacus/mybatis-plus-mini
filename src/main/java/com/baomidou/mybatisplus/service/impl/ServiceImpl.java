@@ -307,13 +307,11 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Page<Map<String, Object>> selectMapsPage(Page page, Wrapper wrapper) {
-        SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.selectMapsPage(page, wrapper));
         return page;
     }
 
     public Page<T> selectPage(Page<T> page, Wrapper wrapper) {
-        SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.selectPage(page, wrapper));
         return page;
     }
