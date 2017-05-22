@@ -79,7 +79,7 @@ public class TableFieldInfo {
      * 存在 TableField 注解构造函数
      * </p>
      */
-    public TableFieldInfo(GlobalConfiguration globalConfig, TableInfo tableInfo, String column,
+    public TableFieldInfo(GlobalConfiguration globalConfig, String column,
                           String el, Field field, TableField tableField) {
         this.property = field.getName();
         this.propertyType = field.getType().getName();
@@ -116,7 +116,7 @@ public class TableFieldInfo {
         this.updateIgnore = tableField.updateIgnore();
     }
 
-    public TableFieldInfo(GlobalConfiguration globalConfig, TableInfo tableInfo, Field field) {
+    public TableFieldInfo(GlobalConfiguration globalConfig, Field field) {
         if (globalConfig.isDbColumnUnderline()) {
             /* 开启字段下划线申明 */
             this.related = true;

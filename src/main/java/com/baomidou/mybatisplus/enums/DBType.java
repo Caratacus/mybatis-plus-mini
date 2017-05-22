@@ -15,96 +15,74 @@
  */
 package com.baomidou.mybatisplus.enums;
 
+import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
+import com.baomidou.mybatisplus.toolkit.StringUtils;
+
 /**
  * <p>
  * MybatisPlus 数据库类型
  * </p>
  *
- * @author hubin
- * @Date 2016-04-15
+ * @author Caratacus
+ * @Date 2017-05-22
  */
 public enum DBType {
-    /**
-     * MYSQL
-     */
-    MYSQL("mysql", "`%s`", "MySql数据库"),
-    /**
-     * ORACLE
-     */
-    ORACLE("oracle", null, "Oracle数据库"),
-    /**
-     * DB2
-     */
-    DB2("db2", "`%s`", "DB2数据库"),
-    /**
-     * H2
-     */
-    H2("h2", null, "H2数据库"),
-    /**
-     * HSQL
-     */
-    HSQL("hsql", null, "HSQL数据库"),
-    /**
-     * SQLITE
-     */
-    SQLITE("sqlite", "`%s`", "SQLite数据库"),
-    /**
-     * POSTGRE
-     */
-    POSTGRE("postgresql", "\"%s\"", "Postgre数据库"),
-    /**
-     * SQLSERVER2005
-     */
-    SQLSERVER2005("sqlserver2005", "[%s]", "SQLServer2005数据库"),
-    /**
-     * SQLSERVER
-     */
-    SQLSERVER("sqlserver", "[%s]", "SQLServer数据库"),
-    /**
-     * UNKONWN DB
-     */
-    OTHER("other", null, "其他数据库");
+    MYSQL,
+    ORACLE,
+    DB2,
+    H2,
+    HSQL,
+    SQLITE,
+    POSTGRE,
+    SQLSERVER2005,
+    SQLSERVER;
 
-    private final String db;
-
-    private final String quote;
-
-    private final String desc;
-
-    DBType(final String db, final String quote, final String desc) {
-        this.db = db;
-        this.quote = quote;
-        this.desc = desc;
-    }
 
     /**
      * <p>
-     * 获取数据库类型（默认 MySql）
+     * 获取数据库类型
      * </p>
      *
-     * @param dbType 数据库类型字符串
+     * @param type 数据库类型字符串
      * @return
      */
-    public static DBType getDBType(String dbType) {
-        DBType[] dts = DBType.values();
-        for (DBType dt : dts) {
-            if (dt.getDb().equalsIgnoreCase(dbType)) {
-                return dt;
+    public static DBType getDBType(String type) {
+        if (StringUtils.isNotEmpty(type)) {
+            DBType[] dbTypes = DBType.values();
+            for (DBType dbType : dbTypes) {
+                if (dbType.name().equalsIgnoreCase(type)) {
+                    return dbType;
+                }
             }
         }
-        return MYSQL;
+        throw new MybatisPlusException("Error: Unknown database type, or do not support changing database!\n");
     }
 
-    public String getDb() {
-        return this.db;
-    }
 
-    public String getQuote() {
-        return this.quote;
-    }
+    public static String getQuote(DBType dbType) {
+        switch (dbType) {
+            case H2:
+                return null;
+            case DB2:
+                return null;
+            case HSQL:
+                return null;
+            case MYSQL:
+                return "`%s`";
+            case ORACLE:
+                return null;
+            case SQLITE:
+                return "`%s`";
+            case POSTGRE:
+                return "\"%s\"";
+            case SQLSERVER:
+                return "[%s]";
+            case SQLSERVER2005:
+                return "[%s]";
+            default:
+                return null;
 
-    public String getDesc() {
-        return this.desc;
+        }
     }
 
 }

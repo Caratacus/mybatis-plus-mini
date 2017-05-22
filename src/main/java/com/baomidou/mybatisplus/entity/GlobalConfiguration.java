@@ -345,7 +345,7 @@ public class GlobalConfiguration implements Cloneable {
 
     public String getIdentifierQuote() {
         if (null == identifierQuote) {
-            return dbType.getQuote();
+            return DBType.getQuote(dbType);
         }
         return identifierQuote;
     }

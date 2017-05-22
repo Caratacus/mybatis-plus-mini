@@ -16,6 +16,7 @@
 package com.baomidou.mybatisplus.toolkit;
 
 import com.baomidou.mybatisplus.enums.DBType;
+import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 
 /**
  * <p>
@@ -59,7 +60,7 @@ public class JdbcUtils {
         } else if (jdbcUrl.startsWith("jdbc:h2:") || jdbcUrl.startsWith("jdbc:log4jdbc:h2:")) {
             return DBType.H2;
         } else {
-            return DBType.OTHER;
+            throw new MybatisPlusException("Error: Unknown database type, or do not support changing database!\n");
         }
     }
 
