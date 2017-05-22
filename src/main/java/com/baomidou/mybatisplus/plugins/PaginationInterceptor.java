@@ -43,7 +43,6 @@ import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.baomidou.mybatisplus.toolkit.JdbcUtils;
 import com.baomidou.mybatisplus.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.toolkit.SqlUtils;
-import com.baomidou.mybatisplus.toolkit.StringUtils;
 
 /**
  * <p>
@@ -60,14 +59,6 @@ public class PaginationInterceptor implements Interceptor {
 
     /* 溢出总页数，设置第一页 */
     private boolean overflowCurrent = false;
-    /* 是否设置动态数据源 设置之后动态获取当前数据源 */
-    private boolean dynamicDataSource = false;
-    /* Count优化方式 */
-    private String optimizeType = "default";
-    /* 方言类型 */
-    private String dialectType;
-    /* 方言实现类 */
-    private String dialectClazz;
 
     /**
      * Physical Pagination Interceptor for all the queries with parameter {@link org.apache.ibatis.session.RowBounds}
@@ -88,14 +79,12 @@ public class PaginationInterceptor implements Interceptor {
         BoundSql boundSql = (BoundSql) metaStatementHandler.getValue("delegate.boundSql");
         String originalSql = boundSql.getSql();
         Connection connection = (Connection) invocation.getArgs()[0];
-        if (isDynamicDataSource()) {
-            dialectType = JdbcUtils.getDbType(connection.getMetaData().getURL()).getDb();
-        }
+        String dialectType = JdbcUtils.getDbType(connection.getMetaData().getURL()).getDb();
         if (rowBounds instanceof Pagination) {
             Pagination page = (Pagination) rowBounds;
             boolean orderBy = true;
             if (page.isSearchCount()) {
-                CountOptimize countOptimize = SqlUtils.getCountOptimize(originalSql, optimizeType, dialectType, page.isOptimizeCount());
+                CountOptimize countOptimize = SqlUtils.getCountOptimize(originalSql);
                 orderBy = countOptimize.isOrderBy();
                 this.queryTotal(countOptimize.getCountSQL(), mappedStatement, boundSql, page, connection);
                 if (page.getTotal() <= 0) {
@@ -103,10 +92,10 @@ public class PaginationInterceptor implements Interceptor {
                 }
             }
             String buildSql = SqlUtils.concatOrderBy(originalSql, page, orderBy);
-            originalSql = DialectFactory.buildPaginationSql(page, buildSql, dialectType, dialectClazz);
+            originalSql = DialectFactory.buildPaginationSql(page, buildSql, dialectType, null);
         } else {
             // support physical Pagination for RowBounds
-            originalSql = DialectFactory.buildPaginationSql(rowBounds, originalSql, dialectType, dialectClazz);
+            originalSql = DialectFactory.buildPaginationSql(rowBounds, originalSql, dialectType, null);
         }
 
 		/*
@@ -157,39 +146,10 @@ public class PaginationInterceptor implements Interceptor {
         return target;
     }
 
-    public void setProperties(Properties prop) {
-        String dialectType = prop.getProperty("dialectType");
-        String dialectClazz = prop.getProperty("dialectClazz");
+    @Override
+    public void setProperties(Properties properties) {
 
-        if (StringUtils.isNotEmpty(dialectType)) {
-            this.dialectType = dialectType;
-        }
-        if (StringUtils.isNotEmpty(dialectClazz)) {
-            this.dialectClazz = dialectClazz;
-        }
     }
 
-    public void setDialectType(String dialectType) {
-        this.dialectType = dialectType;
-    }
 
-    public void setDialectClazz(String dialectClazz) {
-        this.dialectClazz = dialectClazz;
-    }
-
-    public void setOverflowCurrent(boolean overflowCurrent) {
-        this.overflowCurrent = overflowCurrent;
-    }
-
-    public void setOptimizeType(String optimizeType) {
-        this.optimizeType = optimizeType;
-    }
-
-    public boolean isDynamicDataSource() {
-        return dynamicDataSource;
-    }
-
-    public void setDynamicDataSource(boolean dynamicDataSource) {
-        this.dynamicDataSource = dynamicDataSource;
-    }
 }

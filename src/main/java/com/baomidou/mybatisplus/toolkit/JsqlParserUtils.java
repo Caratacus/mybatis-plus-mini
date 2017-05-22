@@ -51,7 +51,8 @@ public class JsqlParserUtils {
      *            selectSQL
      * @return
      */
-    public static CountOptimize jsqlparserCount(CountOptimize countOptimize, String originalSql) {
+    public static CountOptimize jsqlparserCount(String originalSql) {
+        CountOptimize countOptimize = CountOptimize.newInstance();
         String sqlCount;
         try {
             Select selectStatement = (Select) CCJSqlParserUtil.parse(originalSql);
