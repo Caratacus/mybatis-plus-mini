@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.sql.DataSource;
 
-import com.baomidou.mybatisplus.mapper.IKeyGenerator;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.Configuration;
@@ -37,6 +36,7 @@ import com.baomidou.mybatisplus.enums.FieldStrategy;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.mapper.AutoSqlInjector;
+import com.baomidou.mybatisplus.mapper.IKeyGenerator;
 import com.baomidou.mybatisplus.mapper.ISqlInjector;
 import com.baomidou.mybatisplus.mapper.MetaObjectHandler;
 import com.baomidou.mybatisplus.toolkit.IOUtils;
@@ -65,12 +65,8 @@ public class GlobalConfiguration implements Cloneable {
      * 缓存全局信息
      */
     private static final Map<String, GlobalConfiguration> GLOBAL_CONFIG = new ConcurrentHashMap<>();
-    // 逻辑删除全局值
-    private String logicDeleteValue = null;
-    // 逻辑未删除全局值
-    private String logicNotDeleteValue = null;
     // 数据库类型（默认 MySql）
-    private DBType dbType = DBType.MYSQL;
+    private DBType dbType;
     // 主键类型（默认 ID_WORKER）
     private IdType idType = IdType.ID_WORKER;
     // 表名、字段名、是否使用下划线命名（默认 false）
@@ -85,8 +81,6 @@ public class GlobalConfiguration implements Cloneable {
     private FieldStrategy fieldStrategy = FieldStrategy.NOT_NULL;
     // 是否刷新mapper
     private boolean isRefresh = false;
-    // 是否自动获取DBType
-    private boolean isAutoSetDbType = true;
     // 是否大写命名
     private boolean isCapitalMode = false;
     // 标识符
@@ -227,10 +221,6 @@ public class GlobalConfiguration implements Cloneable {
         return getGlobalConfig(configuration).isRefresh();
     }
 
-    public static boolean isAutoSetDbType(Configuration configuration) {
-        return getGlobalConfig(configuration).isAutoSetDbType();
-    }
-
     public static Set<String> getMapperRegistryCache(Configuration configuration) {
         return getGlobalConfig(configuration).getMapperRegistryCache();
     }
@@ -257,9 +247,7 @@ public class GlobalConfiguration implements Cloneable {
             // 设置全局关键字
             globalConfig.setSqlKeywords(connection.getMetaData().getSQLKeywords());
             // 自动设置数据库类型
-            if (globalConfig.isAutoSetDbType()) {
-                globalConfig.setDbTypeByJdbcUrl(jdbcUrl);
-            }
+            globalConfig.setDbType(jdbcUrl);
         } catch (SQLException e) {
             logger.warn("Warn: GlobalConfiguration setMetaData Fail !  Cause:" + e);
         } finally {
@@ -267,34 +255,19 @@ public class GlobalConfiguration implements Cloneable {
         }
     }
 
-    public String getLogicDeleteValue() {
-        return logicDeleteValue;
-    }
-
-    public void setLogicDeleteValue(String logicDeleteValue) {
-        this.logicDeleteValue = logicDeleteValue;
-    }
-
-    public String getLogicNotDeleteValue() {
-        return logicNotDeleteValue;
-    }
-
-    public void setLogicNotDeleteValue(String logicNotDeleteValue) {
-        this.logicNotDeleteValue = logicNotDeleteValue;
-    }
-
     public DBType getDbType() {
         return dbType;
     }
 
-    public void setDbType(String dbType) {
-        this.dbType = DBType.getDBType(dbType);
-        this.isAutoSetDbType = false;
-    }
-
-    public void setDbTypeByJdbcUrl(String jdbcUrl) {
+    /**
+     * 根据jdbcUrl设置数据库类型
+     *
+     * @param jdbcUrl
+     */
+    public void setDbType(String jdbcUrl) {
         this.dbType = JdbcUtils.getDbType(jdbcUrl);
     }
+
 
     public IdType getIdType() {
         return idType;
@@ -344,13 +317,6 @@ public class GlobalConfiguration implements Cloneable {
         this.isRefresh = refresh;
     }
 
-    public boolean isAutoSetDbType() {
-        return isAutoSetDbType;
-    }
-
-    public void setAutoSetDbType(boolean autoSetDbType) {
-        this.isAutoSetDbType = autoSetDbType;
-    }
 
     public Set<String> getMapperRegistryCache() {
         return mapperRegistryCache;

@@ -49,7 +49,6 @@ public class GlobalConfigurationTest {
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         GlobalConfiguration global = GlobalConfiguration.defaults();
-        global.setAutoSetDbType(true);
         // 设置全局校验机制为FieldStrategy.Empty
         global.setFieldStrategy(2);
         BasicDataSource dataSource = new BasicDataSource();

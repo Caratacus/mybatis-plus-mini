@@ -18,7 +18,6 @@ package com.baomidou.mybatisplus.entity;
 import java.lang.reflect.Field;
 
 import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.enums.FieldStrategy;
 import com.baomidou.mybatisplus.toolkit.SqlReservedWords;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
@@ -120,7 +119,6 @@ public class TableFieldInfo {
         } else {
             this.fieldStrategy = globalConfig.getFieldStrategy();
         }
-        tableInfo.setLogicDelete(this.initLogicDelete(globalConfig, field));
 		/*
 		 * 保存当前字段的插入忽略，更新忽略值
 		 */
@@ -140,39 +138,8 @@ public class TableFieldInfo {
         this.el = field.getName();
         this.fieldStrategy = globalConfig.getFieldStrategy();
         this.propertyType = field.getType().getName();
-        tableInfo.setLogicDelete(this.initLogicDelete(globalConfig, field));
     }
 
-    /**
-     * <p>
-     * 逻辑删除初始化
-     * </p>
-     *
-     * @param globalConfig 全局配置
-     * @param field        字段属性对象
-     */
-    private boolean initLogicDelete(GlobalConfiguration globalConfig, Field field) {
-        if (null == globalConfig.getLogicDeleteValue()) {
-            // 未设置逻辑删除值不进行
-            return false;
-        }
-        /* 获取注解属性，逻辑处理字段 */
-        TableLogic tableLogic = field.getAnnotation(TableLogic.class);
-        if (null != tableLogic) {
-            if (StringUtils.isNotEmpty(tableLogic.value())) {
-                this.logicNotDeleteValue = tableLogic.value();
-            } else {
-                this.logicNotDeleteValue = globalConfig.getLogicNotDeleteValue();
-            }
-            if (StringUtils.isNotEmpty(tableLogic.delval())) {
-                this.logicDeleteValue = tableLogic.delval();
-            } else {
-                this.logicDeleteValue = globalConfig.getLogicDeleteValue();
-            }
-            return true;
-        }
-        return false;
-    }
 
     public boolean isRelated() {
         return related;

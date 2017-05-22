@@ -166,19 +166,8 @@ public class TableInfo {
         return fieldList;
     }
 
-    public void setFieldList(GlobalConfiguration globalConfig, List<TableFieldInfo> fieldList) {
+    public void setFieldList(List<TableFieldInfo> fieldList) {
         this.fieldList = fieldList;
-        /*
-         * 启动逻辑删除注入、判断该表是否启动
-         */
-        if (null != globalConfig.getLogicDeleteValue()) {
-            for (TableFieldInfo tfi: fieldList) {
-                if (tfi.isLogicDelete()) {
-                    this.setLogicDelete(true);
-                    break;
-                }
-            }
-        }
     }
 
     public String getCurrentNamespace() {
