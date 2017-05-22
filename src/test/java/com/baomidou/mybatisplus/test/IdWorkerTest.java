@@ -3,7 +3,6 @@ package com.baomidou.mybatisplus.test;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -55,20 +54,13 @@ public class IdWorkerTest {
 		final List<Long> results = new ArrayList<>();
 		CompletionService<Long> cs = new ExecutorCompletionService<Long>(executorService);
 		for (int i = 1; i < count; i++) {
-			cs.submit(new Callable<Long>() {
-				public Long call() throws Exception {
-					Thread.sleep(RandomUtils.nextInt(1, 2000));
-					return IdWorker.getId();
-				}
-			});
+			cs.submit(() -> {
+                Thread.sleep(RandomUtils.nextInt(1, 2000));
+                return IdWorker.getId();
+            });
 		}
 		for (int i = 0; i < count; i++) {
-			Future<Long> future = executorService.submit(new Callable<Long>() {
-				@Override
-				public Long call() throws Exception {
-					return IdWorker.getId();
-				}
-			});
+			Future<Long> future = executorService.submit(() -> IdWorker.getId());
 			results.add(future.get());
 		}
 		executorService.shutdown();

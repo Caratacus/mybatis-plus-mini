@@ -152,20 +152,18 @@ public class OptimisticLockerInterceptorTest {
 	public void multiThreadVersionTest() {
 		final Random random = new Random();
 		for (int i = 50; i < 150; i++) {
-			new Thread(new Runnable() {
-				public void run() {
-					IntVersionUser intVersionUser = new IntVersionUser();
-					long id = random.nextLong();
-					intVersionUser.setId(id);
-					int version = random.nextInt();
-					intVersionUser.setName("改前" + version);
-					intVersionUser.setVersion(version);
-					intVersionUserMapper.insert(intVersionUser);
-					intVersionUser.setName("改后" + version);
-					intVersionUserMapper.updateById(intVersionUser);
-					Assert.assertTrue(intVersionUserMapper.selectById(id).getVersion() == version + 1);
-				}
-			}, "编号" + i).start();
+			new Thread(() -> {
+                IntVersionUser intVersionUser = new IntVersionUser();
+                long id = random.nextLong();
+                intVersionUser.setId(id);
+                int version = random.nextInt();
+                intVersionUser.setName("改前" + version);
+                intVersionUser.setVersion(version);
+                intVersionUserMapper.insert(intVersionUser);
+                intVersionUser.setName("改后" + version);
+                intVersionUserMapper.updateById(intVersionUser);
+                Assert.assertTrue(intVersionUserMapper.selectById(id).getVersion() == version + 1);
+            }, "编号" + i).start();
 		}
 
 		try {
