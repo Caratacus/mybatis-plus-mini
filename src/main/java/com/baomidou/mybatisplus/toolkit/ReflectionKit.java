@@ -252,7 +252,7 @@ public class ReflectionKit {
             if (Object.class.equals(cls)) {
                 throw new MybatisPlusException(String.format("Error: Could Not find %s in TableInfo Cache. ", cls.getSimpleName()));
             } else {
-                getTableInfoAsSuperClass(cls.getSuperclass());
+                tableInfo = getTableInfoAsSuperClass(cls.getSuperclass());
             }
         }
         return tableInfo;
