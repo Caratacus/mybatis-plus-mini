@@ -17,7 +17,6 @@ package com.baomidou.mybatisplus.mapper;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,6 @@ import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.mapping.StatementType;
@@ -140,7 +137,7 @@ public class AutoSqlInjector implements ISqlInjector {
         /* 删除 */
         this.injectDeleteSql(mapperClass, modelClass, table);
         this.injectDeleteByMapSql(mapperClass, table);
-		/* 修改 */
+        /* 修改 */
         this.injectUpdateSql(mapperClass, modelClass, table);
 		/* 查询 */
         this.injectSelectByMapSql(mapperClass, modelClass, table);
@@ -845,140 +842,6 @@ public class AutoSqlInjector implements ISqlInjector {
         return builderAssistant.addMappedStatement(id, sqlSource, StatementType.PREPARED, sqlCommandType, null, null, null,
                 parameterClass, resultMap, resultType, null, !isSelect, isSelect, false, keyGenerator, keyProperty, keyColumn,
                 configuration.getDatabaseId(), languageDriver, null);
-    }
-
-    // --------------------------------------------------------SqlRunner------------------------------------------------------------
-    public void injectSqlRunner(Configuration configuration) {
-        this.configuration = configuration;
-        this.languageDriver = configuration.getDefaultScriptingLanguageInstance();
-        initSelectList();
-        initSelectObjs();
-        initInsert();
-        initUpdate();
-        initDelete();
-        initCount();
-    }
-
-    /**
-     * 是否已经存在MappedStatement
-     *
-     * @param mappedStatement
-     * @return
-     */
-    private boolean hasMappedStatement(String mappedStatement) {
-        return configuration.hasStatement(mappedStatement, false);
-    }
-
-    /**
-     * 创建查询MappedStatement
-     *
-     * @param mappedStatement
-     * @param sqlSource       执行的sqlSource
-     * @param resultType      返回的结果类型
-     */
-    @SuppressWarnings("serial")
-    private void createSelectMappedStatement(String mappedStatement, SqlSource sqlSource, final Class<?> resultType) {
-        MappedStatement ms = new MappedStatement.Builder(configuration, mappedStatement, sqlSource, SqlCommandType.SELECT)
-                .resultMaps(new ArrayList<ResultMap>() {
-                    {
-                        add(new ResultMap.Builder(configuration, "defaultResultMap", resultType, new ArrayList<ResultMapping>(0))
-                                .build());
-                    }
-                }).build();
-        // 缓存
-        configuration.addMappedStatement(ms);
-    }
-
-    /**
-     * 创建一个MappedStatement
-     *
-     * @param mappedStatement
-     * @param sqlSource       执行的sqlSource
-     * @param sqlCommandType  执行的sqlCommandType
-     */
-    @SuppressWarnings("serial")
-    private void createUpdateMappedStatement(String mappedStatement, SqlSource sqlSource, SqlCommandType sqlCommandType) {
-        MappedStatement ms = new MappedStatement.Builder(configuration, mappedStatement, sqlSource, sqlCommandType).resultMaps(
-                new ArrayList<ResultMap>() {
-                    {
-                        add(new ResultMap.Builder(configuration, "defaultResultMap", int.class, new ArrayList<ResultMapping>(0))
-                                .build());
-                    }
-                }).build();
-        // 缓存
-        configuration.addMappedStatement(ms);
-    }
-
-    /**
-     * initSelectList
-     */
-    private void initSelectList() {
-        if (hasMappedStatement(SqlRunner.SELECT_LIST)) {
-            logger.warn("MappedStatement 'SqlRunner.SelectList' Already Exists");
-            return;
-        }
-        SqlSource sqlSource = languageDriver.createSqlSource(configuration, SqlRunner.SQLScript, Map.class);
-        createSelectMappedStatement(SqlRunner.SELECT_LIST, sqlSource, Map.class);
-    }
-
-    /**
-     * initSelectObjs
-     */
-    private void initSelectObjs() {
-        if (hasMappedStatement(SqlRunner.SELECT_OBJS)) {
-            logger.warn("MappedStatement 'SqlRunner.SelectObjs' Already Exists");
-            return;
-        }
-        SqlSource sqlSource = languageDriver.createSqlSource(configuration, SqlRunner.SQLScript, Object.class);
-        createSelectMappedStatement(SqlRunner.SELECT_OBJS, sqlSource, Object.class);
-    }
-
-    /**
-     * initCount
-     */
-    private void initCount() {
-        if (hasMappedStatement(SqlRunner.COUNT)) {
-            logger.warn("MappedStatement 'SqlRunner.Count' Already Exists");
-            return;
-        }
-        SqlSource sqlSource = languageDriver.createSqlSource(configuration, SqlRunner.SQLScript, Map.class);
-        createSelectMappedStatement(SqlRunner.COUNT, sqlSource, Integer.class);
-    }
-
-    /**
-     * initInsert
-     */
-    private void initInsert() {
-        if (hasMappedStatement(SqlRunner.INSERT)) {
-            logger.warn("MappedStatement 'SqlRunner.Insert' Already Exists");
-            return;
-        }
-        SqlSource sqlSource = languageDriver.createSqlSource(configuration, SqlRunner.SQLScript, Map.class);
-        createUpdateMappedStatement(SqlRunner.INSERT, sqlSource, SqlCommandType.INSERT);
-    }
-
-    /**
-     * initUpdate
-     */
-    private void initUpdate() {
-        if (hasMappedStatement(SqlRunner.UPDATE)) {
-            logger.warn("MappedStatement 'SqlRunner.Update' Already Exists");
-            return;
-        }
-        SqlSource sqlSource = languageDriver.createSqlSource(configuration, SqlRunner.SQLScript, Map.class);
-        createUpdateMappedStatement(SqlRunner.UPDATE, sqlSource, SqlCommandType.UPDATE);
-    }
-
-    /**
-     * initDelete
-     */
-    private void initDelete() {
-        if (hasMappedStatement(SqlRunner.DELETE)) {
-            logger.warn("MappedStatement 'SqlRunner.Delete' Already Exists");
-            return;
-        }
-        SqlSource sqlSource = languageDriver.createSqlSource(configuration, SqlRunner.SQLScript, Map.class);
-        createUpdateMappedStatement(SqlRunner.DELETE, sqlSource, SqlCommandType.DELETE);
     }
 
     /**

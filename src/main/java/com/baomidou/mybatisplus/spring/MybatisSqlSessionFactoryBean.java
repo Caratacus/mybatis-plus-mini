@@ -57,9 +57,9 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import com.baomidou.mybatisplus.MybatisConfiguration;
 import com.baomidou.mybatisplus.MybatisXMLConfigBuilder;
 import com.baomidou.mybatisplus.MybatisXMLMapperBuilder;
+import com.baomidou.mybatisplus.entity.Column;
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.mapper.SqlRunner;
 import com.baomidou.mybatisplus.toolkit.PackageHelper;
 
 /**
@@ -515,8 +515,8 @@ public class MybatisSqlSessionFactoryBean implements FactoryBean<SqlSessionFacto
         // 设置元数据相关
         GlobalConfiguration.setMetaData(dataSource, globalConfig);
         SqlSessionFactory sqlSessionFactory = this.sqlSessionFactoryBuilder.build(configuration);
-        // TODO SqlRunner
-        SqlRunner.FACTORY = sqlSessionFactory;
+        // Column.FACTORY
+        Column.FACTORY = sqlSessionFactory;
         // TODO 缓存 sqlSessionFactory
         globalConfig.setSqlSessionFactory(sqlSessionFactory);
         // TODO 设置全局参数属性

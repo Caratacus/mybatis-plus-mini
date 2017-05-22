@@ -27,7 +27,6 @@ import com.baomidou.mybatisplus.enums.SqlMethod;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
-import com.baomidou.mybatisplus.mapper.SqlRunner;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
@@ -350,15 +349,6 @@ public abstract class Model<T extends Model> implements Serializable {
         Map<String, Object> map = new HashMap<>();
         map.put("ew", wrapper);
         return SqlHelper.retCount(sqlSession().<Integer>selectOne(sqlStatement(SqlMethod.SELECT_COUNT), map));
-    }
-
-    /**
-     * <p>
-     * 执行 SQL
-     * </p>
-     */
-    public SqlRunner sql() {
-        return new SqlRunner(getClass());
     }
 
     /**

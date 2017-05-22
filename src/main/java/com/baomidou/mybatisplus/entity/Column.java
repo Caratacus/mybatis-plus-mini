@@ -17,7 +17,8 @@ package com.baomidou.mybatisplus.entity;
 
 import java.io.Serializable;
 
-import com.baomidou.mybatisplus.mapper.SqlRunner;
+import org.apache.ibatis.session.SqlSessionFactory;
+
 import com.baomidou.mybatisplus.toolkit.StringUtils;
 
 /**
@@ -33,6 +34,9 @@ public class Column implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final String AS = " AS ";
+
+    // 默认FACTORY
+    public static SqlSessionFactory FACTORY;
 
     /**
      * 获取实例
@@ -62,8 +66,8 @@ public class Column implements Serializable {
             return StringUtils.EMPTY;
         }
         String quote = null;
-        if (isEscape() && SqlRunner.FACTORY != null) {
-            GlobalConfiguration globalConfig = GlobalConfiguration.getGlobalConfig(SqlRunner.FACTORY.getConfiguration());
+        if (isEscape() && FACTORY != null) {
+            GlobalConfiguration globalConfig = GlobalConfiguration.getGlobalConfig(FACTORY.getConfiguration());
             quote = globalConfig.getIdentifierQuote() == null ? globalConfig.getDbType().getQuote() : globalConfig.getIdentifierQuote();
         }
         return AS + (StringUtils.isNotEmpty(quote) ? String.format(quote, as) : as);

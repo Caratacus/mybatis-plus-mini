@@ -40,13 +40,13 @@ import com.baomidou.mybatisplus.annotations.KeySequence;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.entity.Column;
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
 import com.baomidou.mybatisplus.entity.TableFieldInfo;
 import com.baomidou.mybatisplus.entity.TableInfo;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.mapper.IKeyGenerator;
-import com.baomidou.mybatisplus.mapper.SqlRunner;
 
 /**
  * <p>
@@ -375,7 +375,7 @@ public class TableInfoHelper {
         Configuration configuration = sqlSessionFactory.getConfiguration();
         GlobalConfiguration globalConfig = GlobalConfiguration.getGlobalConfig(configuration);
         // SqlRunner
-        SqlRunner.FACTORY = sqlSessionFactory;
+        Column.FACTORY = sqlSessionFactory;
         if (globalConfig == null) {
             GlobalConfiguration defaultCache = GlobalConfiguration.defaults();
             defaultCache.setSqlSessionFactory(sqlSessionFactory);

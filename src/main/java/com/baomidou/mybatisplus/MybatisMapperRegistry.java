@@ -26,8 +26,6 @@ import org.apache.ibatis.binding.MapperRegistry;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 
-import com.baomidou.mybatisplus.entity.GlobalConfiguration;
-
 /**
  * <p>
  * 继承至MapperRegistry
@@ -44,8 +42,6 @@ public class MybatisMapperRegistry extends MapperRegistry {
     public MybatisMapperRegistry(Configuration config) {
         super(config);
         this.config = config;
-        // TODO注入SqlRunner
-        GlobalConfiguration.getSqlInjector(config).injectSqlRunner(config);
     }
 
     @SuppressWarnings("unchecked")

@@ -16,7 +16,6 @@
 package com.baomidou.mybatisplus.mapper;
 
 import org.apache.ibatis.builder.MapperBuilderAssistant;
-import org.apache.ibatis.session.Configuration;
 
 /**
  * <p>
@@ -43,13 +42,5 @@ public interface ISqlInjector {
      * @param mapperClass
      */
     void inspectInject(MapperBuilderAssistant builderAssistant, Class<?> mapperClass);
-
-    /**
-     * 注入SqlRunner相关
-     *
-     * @param configuration
-     * @see com.baomidou.mybatisplus.mapper.SqlRunner
-     */
-    void injectSqlRunner(Configuration configuration);
 
 }
