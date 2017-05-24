@@ -124,10 +124,7 @@ public abstract class Wrapper implements Serializable {
 
     public String toString() {
         String sqlSegment = getSqlSegment();
-        if (StringUtils.isNotEmpty(sqlSegment)) {
-            sqlSegment = sqlSegment.replaceAll("#\\{" + getParamAlias() + ".paramNameValuePairs.MPGENVAL[0-9]+}", "\\?");
-        }
-        return sqlSegment;
+        return StringUtils.isNotEmpty(sqlSegment) ? sqlSegment.replaceAll("#\\{" + getParamAlias() + ".paramNameValuePairs.MPGENVAL[0-9]+}", "\\?") : super.toString();
     }
 
     /**

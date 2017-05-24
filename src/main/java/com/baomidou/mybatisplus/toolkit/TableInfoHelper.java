@@ -104,12 +104,14 @@ public class TableInfoHelper {
      * @return
      */
     public synchronized static TableInfo initTableInfo(MapperBuilderAssistant builderAssistant, Class<?> clazz) {
-        TableInfo ti = tableInfoCache.get(clazz.getName());
-        if (ti != null) {
-            ti.setConfigMark(builderAssistant.getConfiguration());
-            return ti;
+        TableInfo tableInfo = tableInfoCache.get(clazz.getName());
+        if (StringUtils.checkValNotNull(tableInfo)) {
+            if (StringUtils.checkValNotNull(builderAssistant)) {
+                tableInfo.setConfigMark(builderAssistant.getConfiguration());
+            }
+            return tableInfo;
         }
-        TableInfo tableInfo = new TableInfo();
+        tableInfo = new TableInfo();
         GlobalConfiguration globalConfig;
         if (null != builderAssistant) {
             tableInfo.setCurrentNamespace(builderAssistant.getCurrentNamespace());
