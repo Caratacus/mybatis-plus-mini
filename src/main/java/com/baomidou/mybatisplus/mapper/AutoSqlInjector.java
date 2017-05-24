@@ -288,7 +288,7 @@ public class AutoSqlInjector implements ISqlInjector {
      */
     protected void injectDeleteByMapSql(Class<?> mapperClass, TableInfo table) {
         SqlMethod sqlMethod = SqlMethod.DELETE_BY_MAP;
-        String sql = String.format(sqlMethod.getSql(), table.getTableName(), sqlWhereByMap(table));
+        String sql = String.format(sqlMethod.getSql(), table.getTableName(), sqlWhereByMap());
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, Map.class);
         this.addDeleteMappedStatement(mapperClass, sqlMethod.getMethod(), sqlSource);
     }
@@ -392,7 +392,7 @@ public class AutoSqlInjector implements ISqlInjector {
      */
     protected void injectSelectByMapSql(Class<?> mapperClass, Class<?> modelClass, TableInfo table) {
         SqlMethod sqlMethod = SqlMethod.SELECT_BY_MAP;
-        String sql = String.format(sqlMethod.getSql(), sqlSelectColumns(table, false), table.getTableName(), sqlWhereByMap(table));
+        String sql = String.format(sqlMethod.getSql(), sqlSelectColumns(table, false), table.getTableName(), sqlWhereByMap());
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, Map.class);
         this.addSelectMappedStatement(mapperClass, sqlMethod.getMethod(), sqlSource, modelClass, table);
     }
@@ -709,7 +709,7 @@ public class AutoSqlInjector implements ISqlInjector {
      * SQL map 查询条件
      * </p>
      */
-    protected String sqlWhereByMap(TableInfo table) {
+    protected String sqlWhereByMap() {
         StringBuilder where = new StringBuilder();
         where.append("\n<if test=\"cm!=null and !cm.isEmpty\">");
         where.append("\n<where>");
