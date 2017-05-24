@@ -106,6 +106,7 @@ public class TableInfoHelper {
     public synchronized static TableInfo initTableInfo(MapperBuilderAssistant builderAssistant, Class<?> clazz) {
         TableInfo ti = tableInfoCache.get(clazz.getName());
         if (ti != null) {
+            ti.setConfigMark(builderAssistant.getConfiguration());
             return ti;
         }
         TableInfo tableInfo = new TableInfo();
