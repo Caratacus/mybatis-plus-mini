@@ -13,6 +13,7 @@ import org.springframework.core.io.ResourceLoader;
 import com.baomidou.mybatisplus.MybatisConfiguration;
 import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
+import com.baomidou.mybatisplus.plugins.OptimisticLockLightInterceptor;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 
@@ -39,8 +40,9 @@ public class MybatisPlusConfig {
         configuration.setJdbcTypeForNull(JdbcType.NULL);
         sqlSessionFactory.setConfiguration(configuration);
         PaginationInterceptor pagination = new PaginationInterceptor();
+        OptimisticLockLightInterceptor optLock = new OptimisticLockLightInterceptor();
         sqlSessionFactory.setPlugins(new Interceptor[]{
-                pagination
+                pagination,optLock
         });
         sqlSessionFactory.setGlobalConfig(globalConfiguration);
         return sqlSessionFactory.getObject();

@@ -98,11 +98,6 @@ public class H2UserTest {
     }
 
     @Test
-    public void testUpdate() {
-
-    }
-
-    @Test
     public void testDelete() {
         H2User user = new H2User();
         user.setAge(1);
@@ -143,4 +138,95 @@ public class H2UserTest {
         Page<H2User> page = userService.selectPage(new Page<>(1, 3));
         Assert.assertEquals(3, page.getRecords().size());
     }
+
+    @Test
+    public void testUpdateByIdOptLock(){
+        Long id = 991L;
+        H2User user = new H2User();
+        user.setId(id);
+        user.setName("991");
+        user.setAge(91);
+        user.setPrice(BigDecimal.TEN);
+        user.setDesc("asdf");
+        user.setTestType(1);
+        user.setVersion(1);
+        userService.insertAllColumn(user);
+
+        H2User userDB = userService.selectById(id);
+        Assert.assertEquals(1, userDB.getVersion().intValue());
+
+        userDB.setName("991");
+        userService.updateById(userDB);
+
+        userDB = userService.selectById(id);
+        Assert.assertEquals(2, userDB.getVersion().intValue());
+        Assert.assertEquals("991", userDB.getName());
+    }
+
+    @Test
+    public void testUpdateByEntityWrapperOptLock(){
+        Long id = 992L;
+        H2User user = new H2User();
+        user.setId(id);
+        user.setName("992");
+        user.setAge(92);
+        user.setPrice(BigDecimal.TEN);
+        user.setDesc("asdf");
+        user.setTestType(1);
+        user.setVersion(1);
+        userService.insertAllColumn(user);
+
+        H2User userDB = userService.selectById(id);
+        Assert.assertEquals(1, userDB.getVersion().intValue());
+
+        H2User updUser = new H2User();
+        updUser.setName("999");
+
+        userService.update(updUser, new EntityWrapper<>(userDB));
+
+        userDB = userService.selectById(id);
+        Assert.assertEquals(2, userDB.getVersion().intValue());
+        Assert.assertEquals("999", userDB.getName());
+    }
+
+    @Test
+    public void testUpdateByEntityWrapperOptLockWithoutVersion(){
+        Long id = 993L;
+        H2User user = new H2User();
+        user.setId(id);
+        user.setName("992");
+        user.setAge(92);
+        user.setPrice(BigDecimal.TEN);
+        user.setDesc("asdf");
+        user.setTestType(1);
+        user.setVersion(1);
+        userService.insertAllColumn(user);
+
+        H2User userDB = userService.selectById(id);
+        Assert.assertEquals(1, userDB.getVersion().intValue());
+
+        H2User updUser = new H2User();
+        updUser.setName("999");
+        userDB.setVersion(null);
+        userService.update(updUser, new EntityWrapper<>(userDB));
+
+        userDB = userService.selectById(id);
+        Assert.assertEquals(1, userDB.getVersion().intValue());
+        Assert.assertEquals("999", userDB.getName());
+    }
+
+    @Test
+    public void testUpdateBatch(){
+        List<H2User> list = userService.selectList(new EntityWrapper<H2User>());
+        userService.updateBatchById(list);
+
+        list = userService.selectList(new EntityWrapper<H2User>());
+        for(H2User user:list){
+            Assert.assertEquals(1, user.getVersion().intValue());
+        }
+
+    }
+
+
+
 }
