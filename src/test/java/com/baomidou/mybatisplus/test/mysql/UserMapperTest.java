@@ -286,7 +286,7 @@ public class UserMapperTest {
         ew.setSqlSelect("age,name");
 
 		/*
-		 * 查询条件，SQL 片段(根据常用的写SQL的方式按顺序添加相关条件即可)
+         * 查询条件，SQL 片段(根据常用的写SQL的方式按顺序添加相关条件即可)
 		 */
         ew.where("name like {0}", "'%dateBatch%'").and("age={0}", 3).orderBy("age,name", true);
         List<User> paginList = userMapper.selectPage(page, ew);

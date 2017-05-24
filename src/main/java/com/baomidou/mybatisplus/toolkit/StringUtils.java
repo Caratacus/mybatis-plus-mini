@@ -16,9 +16,7 @@
 package com.baomidou.mybatisplus.toolkit;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -179,89 +177,6 @@ public class StringUtils {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
-    }
-
-    /**
-     * <p>
-     * SQL 参数填充
-     * </p>
-     *
-     * @param content 填充内容
-     * @param args    填充参数
-     * @return
-     */
-    public static String sqlArgsFill(String content, Object... args) {
-        if (StringUtils.isEmpty(content)) {
-            return null;
-        }
-        if (args != null) {
-            int length = args.length;
-            if (length >= 1) {
-                for (int i = 0; i < length; i++) {
-                    content = content.replace(String.format(PLACE_HOLDER, i), sqlParam(args[i]));
-                }
-            }
-        }
-        return content;
-    }
-
-    /**
-     * 获取SQL PARAMS字符串
-     *
-     * @param obj
-     * @return
-     */
-    public static String sqlParam(Object obj) {
-        String repStr;
-        if (obj instanceof Collection) {
-            repStr = StringUtils.quotaMarkList((Collection<?>) obj);
-        } else {
-            repStr = StringUtils.quotaMark(obj);
-        }
-        return repStr;
-    }
-
-    /**
-     * <p>
-     * 使用单引号包含字符串
-     * </p>
-     *
-     * @param obj 原字符串
-     * @return 单引号包含的原字符串
-     */
-    public static String quotaMark(Object obj) {
-        String srcStr = String.valueOf(obj);
-        if (obj instanceof CharSequence) {
-            // fix #79
-            return StringEscape.escapeString(srcStr);
-        }
-        return srcStr;
-    }
-
-    /**
-     * <p>
-     * 使用单引号包含字符串
-     * </p>
-     *
-     * @param coll 集合
-     * @return 单引号包含的原字符串的集合形式
-     */
-    public static String quotaMarkList(Collection<?> coll) {
-        StringBuilder sqlBuild = new StringBuilder();
-        sqlBuild.append("(");
-        int _size = coll.size();
-        int i = 0;
-        Iterator<?> iterator = coll.iterator();
-        while (iterator.hasNext()) {
-            String tempVal = StringUtils.quotaMark(iterator.next());
-            sqlBuild.append(tempVal);
-            if (i + 1 < _size) {
-                sqlBuild.append(",");
-            }
-            i++;
-        }
-        sqlBuild.append(")");
-        return sqlBuild.toString();
     }
 
     /**

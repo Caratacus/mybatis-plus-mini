@@ -226,7 +226,7 @@ public class AutoSqlInjector implements ISqlInjector {
                     fieldBuilder.append(table.getKeyColumn()).append(",");
                     placeholderBuilder.append("#{").append(table.getKeyProperty()).append("},");
                 } else {
-            		/* 用户输入自定义ID */
+                    /* 用户输入自定义ID */
                     fieldBuilder.append(table.getKeyColumn()).append(",");
                     // 正常自定义主键策略
                     placeholderBuilder.append("#{").append(table.getKeyProperty()).append("},");

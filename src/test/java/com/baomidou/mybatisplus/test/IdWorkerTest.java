@@ -52,7 +52,7 @@ public class IdWorkerTest {
 
         ExecutorService executorService = Executors.newFixedThreadPool(20);
         final List<Long> results = new ArrayList<>();
-        CompletionService<Long> cs = new ExecutorCompletionService<Long>(executorService);
+        CompletionService<Long> cs = new ExecutorCompletionService<>(executorService);
         for (int i = 1; i < count; i++) {
             cs.submit(() -> {
                 Thread.sleep(RandomUtils.nextInt(1, 2000));
@@ -60,7 +60,7 @@ public class IdWorkerTest {
             });
         }
         for (int i = 0; i < count; i++) {
-            Future<Long> future = executorService.submit(() -> IdWorker.getId());
+            Future<Long> future = executorService.submit(IdWorker::getId);
             results.add(future.get());
         }
         executorService.shutdown();

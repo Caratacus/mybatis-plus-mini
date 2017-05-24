@@ -7,8 +7,8 @@
 
     <!-- 建议字段，采用驼峰命名方法，不然很麻烦 -->
     <select id="selectListRow" resultType="User">
-		select test_id AS id,name,age,test_type AS testType from user
-	</select>
+        select test_id AS id,name,age,test_type AS testType from user
+    </select>
 
     <!-- 根据主键批量查询 -->
     <select id="forSelect" resultType="User">
@@ -23,8 +23,8 @@
     </select>
 
     <delete id="deleteAll">
-		delete FROM user
-	</delete>
+        delete FROM user
+    </delete>
 
     <!-- 测试 resultMap 结果集注入【 注意，实体需要注解 ！！ 】 -->
     <resultMap type="User" id="userMap">
@@ -39,6 +39,7 @@
                 typeHandler="com.baomidou.mybatisplus.test.mysql.typehandler.PhoneTypeHandler"/>
 
         <!-- 级联查询 -->
-        <association column="role" property="role" select="com.baomidou.mybatisplus.test.mysql.mapper.RoleMapper.selectById"/>
+        <association column="role" property="role"
+                     select="com.baomidou.mybatisplus.test.mysql.mapper.RoleMapper.selectById"/>
     </resultMap>
 </mapper>
