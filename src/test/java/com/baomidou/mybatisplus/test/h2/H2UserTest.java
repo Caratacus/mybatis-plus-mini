@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.sql.DataSource;
 
@@ -229,6 +230,28 @@ public class H2UserTest {
             Assert.assertEquals(userVersionMap.get(user.getId())+1, user.getVersion().intValue());
         }
 
+    }
+
+    @Test
+    public void testUpdateInLoop(){
+        List<H2User> list = userService.selectList(new EntityWrapper<H2User>());
+        Map<Long,Integer> versionBefore = new HashMap<>();
+        Map<Long,String> nameExpect = new HashMap<>();
+        for (H2User h2User : list) {
+            Long id = h2User.getId();
+            Integer versionVal = h2User.getVersion();
+            versionBefore.put(id, versionVal);
+            String randomName = h2User.getName()+"_"+new Random().nextInt(10);
+            nameExpect.put(id, randomName);
+            h2User.setName(randomName);
+            userService.updateById(h2User);
+        }
+
+        list = userService.selectList(new EntityWrapper<H2User>());
+        for(H2User u:list){
+            Assert.assertEquals(u.getName(), nameExpect.get(u.getId()));
+            Assert.assertEquals(versionBefore.get(u.getId())+1, u.getVersion().intValue());
+        }
     }
 
 }

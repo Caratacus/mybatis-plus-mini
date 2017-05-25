@@ -51,12 +51,28 @@ public class H2UserAddrJoinTest {
             stmt.execute(readFile("addr.ddl.sql"));
             stmt.execute("truncate table h2address");
             insertUsers(stmt);
+            insertAddr(stmt);
             conn.commit();
         }
     }
 
     private static void insertUsers(Statement stmt) throws SQLException, IOException {
         String filename = "user.insert.sql";
+        String filePath = H2UserAddrJoinTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
+        try (
+                BufferedReader reader = new BufferedReader(new FileReader(filePath))
+        ) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if(line.isEmpty()){
+                    continue;
+                }
+                stmt.execute(line.replace(";", ""));
+            }
+        }
+    }
+    private static void insertAddr(Statement stmt) throws SQLException, IOException {
+        String filename = "addr.insert.sql";
         String filePath = H2UserAddrJoinTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
         try (
                 BufferedReader reader = new BufferedReader(new FileReader(filePath))

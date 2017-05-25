@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -218,13 +220,14 @@ public class H2UserNoVersionTest {
     @Test
     public void testUpdateBatch(){
         List<H2UserNoVersion> list = userService.selectList(new EntityWrapper<H2UserNoVersion>());
+        Map<Long, Integer> userVersionMap = new HashMap<>();
+        list.forEach((u)->userVersionMap.put(u.getId(),u.getVersion()));
         userService.updateBatchById(list);
 
         list = userService.selectList(new EntityWrapper<H2UserNoVersion>());
         for(H2UserNoVersion user:list){
-            Assert.assertEquals(1, user.getVersion().intValue());
+            Assert.assertEquals(userVersionMap.get(user.getId()).intValue(), user.getVersion().intValue());
         }
-
     }
 
 
