@@ -332,7 +332,7 @@ public class AutoSqlInjector implements ISqlInjector {
     protected void injectUpdateByIdSql(boolean selective, Class<?> mapperClass, Class<?> modelClass, TableInfo table) {
         SqlMethod sqlMethod = selective ? SqlMethod.UPDATE_BY_ID : SqlMethod.UPDATE_ALL_COLUMN_BY_ID;
         String sql = String.format(sqlMethod.getSql(), table.getTableName(), sqlSet(selective, table, null), table.getKeyColumn(),
-                table.getKeyProperty());
+                table.getKeyProperty(), "<if test=\"MP_OPTLOCK_VERSION_ORIGINAL!=null\">and ${MP_OPTLOCK_VERSION_COLUMN}=#{MP_OPTLOCK_VERSION_ORIGINAL}</if>");
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
         this.addUpdateMappedStatement(mapperClass, modelClass, sqlMethod.getMethod(), sqlSource);
     }

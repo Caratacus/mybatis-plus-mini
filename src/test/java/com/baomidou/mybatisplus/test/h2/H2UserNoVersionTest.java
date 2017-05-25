@@ -7,9 +7,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -25,8 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.test.h2.entity.persistent.H2User;
-import com.baomidou.mybatisplus.test.h2.entity.service.IH2UserService;
+import com.baomidou.mybatisplus.test.h2.entity.persistent.H2UserNoVersion;
+import com.baomidou.mybatisplus.test.h2.entity.service.IH2UserNoVersionService;
 
 /**
  * <p>
@@ -38,10 +36,10 @@ import com.baomidou.mybatisplus.test.h2.entity.service.IH2UserService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:h2/spring-test-h2.xml"})
-public class H2UserTest {
+public class H2UserNoVersionTest {
 
     @Autowired
-    private IH2UserService userService;
+    private IH2UserNoVersionService userService;
 
     @BeforeClass
     public static void initDB() throws SQLException, IOException {
@@ -60,7 +58,7 @@ public class H2UserTest {
 
     private static void insertUsers(Statement stmt) throws SQLException, IOException {
         String filename = "user.insert.sql";
-        String filePath = H2UserTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
+        String filePath = H2UserNoVersionTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
         try (
                 BufferedReader reader = new BufferedReader(new FileReader(filePath))
         ) {
@@ -73,7 +71,7 @@ public class H2UserTest {
 
     private static String readFile(String filename) {
         StringBuilder builder = new StringBuilder();
-        String filePath = H2UserTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
+        String filePath = H2UserNoVersionTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
         try (
                 BufferedReader reader = new BufferedReader(new FileReader(filePath))
         ) {
@@ -88,20 +86,20 @@ public class H2UserTest {
 
     @Test
     public void testInsert() {
-        H2User user = new H2User();
+        H2UserNoVersion user = new H2UserNoVersion();
         user.setAge(1);
         user.setPrice(new BigDecimal("9.99"));
         userService.insert(user);
         Assert.assertNotNull(user.getId());
         user.setDesc("Caratacus");
         userService.insertOrUpdate(user);
-        H2User userFromDB = userService.selectById(user.getId());
+        H2UserNoVersion userFromDB = userService.selectById(user.getId());
         Assert.assertEquals("Caratacus", userFromDB.getDesc());
     }
 
     @Test
     public void testDelete() {
-        H2User user = new H2User();
+        H2UserNoVersion user = new H2UserNoVersion();
         user.setAge(1);
         user.setPrice(new BigDecimal("9.99"));
         userService.insert(user);
@@ -119,32 +117,32 @@ public class H2UserTest {
 
     @Test
     public void testSelectOne() {
-        H2User user = new H2User();
+        H2UserNoVersion user = new H2UserNoVersion();
         user.setId(105L);
-        EntityWrapper<H2User> ew = new EntityWrapper<>(user);
-        H2User userFromDB = userService.selectOne(ew);
+        EntityWrapper<H2UserNoVersion> ew = new EntityWrapper<>(user);
+        H2UserNoVersion userFromDB = userService.selectOne(ew);
         Assert.assertNotNull(userFromDB);
     }
 
     @Test
     public void testSelectList() {
-        H2User user = new H2User();
-        EntityWrapper<H2User> ew = new EntityWrapper<>(user);
-        List<H2User> list = userService.selectList(ew);
+        H2UserNoVersion user = new H2UserNoVersion();
+        EntityWrapper<H2UserNoVersion> ew = new EntityWrapper<>(user);
+        List<H2UserNoVersion> list = userService.selectList(ew);
         Assert.assertNotNull(list);
         Assert.assertNotEquals(0, list.size());
     }
 
     @Test
     public void testSelectPage() {
-        Page<H2User> page = userService.selectPage(new Page<>(1, 3));
+        Page<H2UserNoVersion> page = userService.selectPage(new Page<>(1, 3));
         Assert.assertEquals(3, page.getRecords().size());
     }
 
     @Test
-    public void testUpdateByIdOptLock(){
+    public void testUpdateById(){
         Long id = 991L;
-        H2User user = new H2User();
+        H2UserNoVersion user = new H2UserNoVersion();
         user.setId(id);
         user.setName("991");
         user.setAge(91);
@@ -154,21 +152,21 @@ public class H2UserTest {
         user.setVersion(1);
         userService.insertAllColumn(user);
 
-        H2User userDB = userService.selectById(id);
+        H2UserNoVersion userDB = userService.selectById(id);
         Assert.assertEquals(1, userDB.getVersion().intValue());
 
         userDB.setName("991");
         userService.updateById(userDB);
 
         userDB = userService.selectById(id);
-        Assert.assertEquals(2, userDB.getVersion().intValue());
+        Assert.assertEquals(1, userDB.getVersion().intValue());
         Assert.assertEquals("991", userDB.getName());
     }
 
     @Test
-    public void testUpdateByEntityWrapperOptLock(){
+    public void testUpdateByEntityWrapper(){
         Long id = 992L;
-        H2User user = new H2User();
+        H2UserNoVersion user = new H2UserNoVersion();
         user.setId(id);
         user.setName("992");
         user.setAge(92);
@@ -178,23 +176,23 @@ public class H2UserTest {
         user.setVersion(1);
         userService.insertAllColumn(user);
 
-        H2User userDB = userService.selectById(id);
+        H2UserNoVersion userDB = userService.selectById(id);
         Assert.assertEquals(1, userDB.getVersion().intValue());
 
-        H2User updUser = new H2User();
+        H2UserNoVersion updUser = new H2UserNoVersion();
         updUser.setName("999");
 
         userService.update(updUser, new EntityWrapper<>(userDB));
 
         userDB = userService.selectById(id);
-        Assert.assertEquals(2, userDB.getVersion().intValue());
+        Assert.assertEquals(1, userDB.getVersion().intValue());
         Assert.assertEquals("999", userDB.getName());
     }
 
     @Test
-    public void testUpdateByEntityWrapperOptLockWithoutVersion(){
+    public void testUpdateByEntityWrapper2(){
         Long id = 993L;
-        H2User user = new H2User();
+        H2UserNoVersion user = new H2UserNoVersion();
         user.setId(id);
         user.setName("992");
         user.setAge(92);
@@ -204,10 +202,10 @@ public class H2UserTest {
         user.setVersion(1);
         userService.insertAllColumn(user);
 
-        H2User userDB = userService.selectById(id);
+        H2UserNoVersion userDB = userService.selectById(id);
         Assert.assertEquals(1, userDB.getVersion().intValue());
 
-        H2User updUser = new H2User();
+        H2UserNoVersion updUser = new H2UserNoVersion();
         updUser.setName("999");
         userDB.setVersion(null);
         userService.update(updUser, new EntityWrapper<>(userDB));
@@ -219,16 +217,15 @@ public class H2UserTest {
 
     @Test
     public void testUpdateBatch(){
-        List<H2User> list = userService.selectList(new EntityWrapper<H2User>());
-        Map<Long, Integer> userVersionMap = new HashMap<>();
-        list.forEach((u)->userVersionMap.put(u.getId(),u.getVersion()));
-
+        List<H2UserNoVersion> list = userService.selectList(new EntityWrapper<H2UserNoVersion>());
         userService.updateBatchById(list);
-        list = userService.selectList(new EntityWrapper<H2User>());
-        for(H2User user:list){
-            Assert.assertEquals(userVersionMap.get(user.getId())+1, user.getVersion().intValue());
+
+        list = userService.selectList(new EntityWrapper<H2UserNoVersion>());
+        for(H2UserNoVersion user:list){
+            Assert.assertEquals(1, user.getVersion().intValue());
         }
 
     }
+
 
 }

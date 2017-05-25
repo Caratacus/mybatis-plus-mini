@@ -1,8 +1,10 @@
 package com.baomidou.mybatisplus.plugins;
 
 import java.lang.reflect.Field;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +13,6 @@ import java.util.Properties;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ParameterMap;
-import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
@@ -30,7 +30,20 @@ import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
 /**
  * <p>
  * Optimistic Lock Light version<BR>
- *     Intercept on {@link Executor}.update;
+ *     Intercept on {@link Executor}.update;<BR>
+ *     Support version types: int/Integer, long/Long, java.util.Date, java.sql.Timestamp<BR>
+ *     For extra types, please define a subclass and override {@code getUpdatedVersionVal}() method.<BR>
+ * <BR>
+ * How to use?<BR>
+ *     (1) Define an Entity and add {@link Version} annotation on one entity field.<BR>
+ *     (2) Add {@link OptimisticLockInterceptor} into mybatis plugin.
+ *
+ * How to work?<BR>
+ *     if update entity with version column=1:<BR>
+ *         (1) no {@link OptimisticLockInterceptor}:<BR>
+ *             SQL: update tbl_test set name='abc' where id=100001;
+ *         (2) add {@link OptimisticLockInterceptor}:<BR>
+ *             SQL: update tbl_test set name='abc',version=2 where id=100001 and version=1;
  * </p>
  *
  * @author yuxiaobin
@@ -38,19 +51,18 @@ import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
  */
 @Intercepts({
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
-public class OptimisticLockLightInterceptor implements Interceptor {
+public class OptimisticLockInterceptor implements Interceptor {
+
+    private final Map<Class<?>, Field> versionFieldCache = new HashMap<>();
+    private final Map<Class<?>, List<EntityField>> entityFieldsCache = new HashMap<>();
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         if(SqlCommandType.UPDATE.compareTo(ms.getSqlCommandType())!=0){
             return invocation.proceed();
         }
-        ParameterMap pmap = ms.getParameterMap();
-
-        List<ParameterMapping> plist =  pmap.getParameterMappings();
         Object param = args[1];
         if(param instanceof MapperMethod.ParamMap){
             //mapper.update(updEntity, EntityWrapper<>(whereEntity);
@@ -62,9 +74,9 @@ public class OptimisticLockLightInterceptor implements Interceptor {
                 if(entity!=null){
                     Field versionField = getVersionField(entity.getClass());
                     if (versionField != null) {
-                        Integer originalVersionVal = (Integer)versionField.get(entity);//TODO: for testing only, hardcode Integer
+                        Object originalVersionVal = versionField.get(entity);
                         if(originalVersionVal!=null){
-                            versionField.set(et, originalVersionVal+1);
+                            versionField.set(et, getUpdatedVersionVal(originalVersionVal));
                         }
                     }
                 }
@@ -78,7 +90,7 @@ public class OptimisticLockLightInterceptor implements Interceptor {
             Map<String,Object> entityMap = new HashMap<>();
             TableInfo tableInfo = TableInfoHelper.getTableInfo(param.getClass());
             if(tableInfo!=null){
-                List<EntityField> fields = getFieldsFromClazz(parameterClass, null);
+                List<EntityField> fields = getEntityFields(parameterClass);
                 Field versionField = null;
                 for(EntityField ef : fields){
                     Field fd = ef.getField();
@@ -89,29 +101,54 @@ public class OptimisticLockLightInterceptor implements Interceptor {
                         }
                     }
                 }
-                Integer originalVersionVal = (Integer)versionField.get(param);//TODO: for testing only, hardcode Integer
-                if(originalVersionVal!=null){
-                    String versionPropertyName = versionField.getName();
-                    List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-                    String versionColumnName = null;
-                    for(TableFieldInfo tf : fieldList){
-                        if(versionPropertyName.equals(tf.getProperty())){
-                            versionColumnName = tf.getColumn();
+                if(versionField!=null) {
+                    Object originalVersionVal = versionField.get(param);
+                    if (originalVersionVal != null) {
+                        String versionPropertyName = versionField.getName();
+                        List<TableFieldInfo> fieldList = tableInfo.getFieldList();
+                        String versionColumnName = null;
+                        for (TableFieldInfo tf : fieldList) {
+                            if (versionPropertyName.equals(tf.getProperty())) {
+                                versionColumnName = tf.getColumn();
+                            }
+                        }
+                        if (versionColumnName != null) {
+                            entityMap.put(versionField.getName(), getUpdatedVersionVal(originalVersionVal));
+                            entityMap.put("MP_OPTLOCK_VERSION_ORIGINAL", originalVersionVal);
+                            entityMap.put("MP_OPTLOCK_VERSION_COLUMN", versionColumnName);
                         }
                     }
-                    if(versionColumnName!=null) {
-                        entityMap.put(versionField.getName(), originalVersionVal+1);
-                        entityMap.put("MP_VERSION_ORIGINAL", originalVersionVal);
-                        entityMap.put("MP_VERSION_COLUMN", versionColumnName);
-                    }
-
                 }
-
             }
             args[1] = entityMap;
         }
-        System.out.println("****param.class"+param.getClass());
         return invocation.proceed();
+    }
+
+    /**
+     * This method provides the control for version value.<BR>
+     * Returned value type must be the same as original one.
+     *
+     * @param originalVersionVal
+     * @return updated version val
+     */
+    protected Object getUpdatedVersionVal(Object originalVersionVal){
+        Class<?> versionValClass = originalVersionVal.getClass();
+        if(long.class.equals(versionValClass)){
+            return ((long)originalVersionVal)+1;
+        }else if(Long.class.equals(versionValClass)){
+            return ((Long)originalVersionVal)+1;
+        }else if(int.class.equals(versionValClass)){
+            return ((int)originalVersionVal)+1;
+        }else if(Integer.class.equals(versionValClass)){
+            return ((Integer)originalVersionVal)+1;
+        }else if(Date.class.equals(versionValClass)){
+            return new Date();
+        }else if(Timestamp.class.equals(versionValClass)){
+            return new Timestamp(System.currentTimeMillis());
+        }else{
+            return originalVersionVal;//not supported type, return original val.
+        }
     }
 
     @Override
@@ -128,6 +165,18 @@ public class OptimisticLockLightInterceptor implements Interceptor {
     }
 
     private Field getVersionField(Class<?> parameterClass) {
+        synchronized (parameterClass.getName()) {
+            if (versionFieldCache.containsKey(parameterClass)) {
+                return versionFieldCache.get(parameterClass);
+            }else{
+                Field field = getVersionFieldRegular(parameterClass);
+                versionFieldCache.put(parameterClass, field);
+                return field;
+            }
+        }
+    }
+
+    private Field getVersionFieldRegular(Class<?> parameterClass){
         if (parameterClass != Object.class) {
             for (Field field : parameterClass.getDeclaredFields()) {
                 if (field.isAnnotationPresent(Version.class)) {
@@ -135,9 +184,19 @@ public class OptimisticLockLightInterceptor implements Interceptor {
                     return field;
                 }
             }
-            return getVersionField(parameterClass.getSuperclass());
+            return getVersionFieldRegular(parameterClass.getSuperclass());
         }
         return null;
+    }
+
+    private List<EntityField> getEntityFields(Class<?> parameterClass){
+        if(entityFieldsCache.containsKey(parameterClass)){
+            return entityFieldsCache.get(parameterClass);
+        }else{
+            List<EntityField> fields = getFieldsFromClazz(parameterClass, null);
+            entityFieldsCache.put(parameterClass, fields);
+            return fields;
+        }
     }
 
     private List<EntityField> getFieldsFromClazz(Class<?> parameterClass, List<EntityField> fieldList){
@@ -161,10 +220,6 @@ class EntityField{
 
     private Field field;
     private boolean version;
-    private String columnName;
-
-    public EntityField() {
-    }
 
     public EntityField(Field field, boolean version) {
         this.field = field;
@@ -185,13 +240,5 @@ class EntityField{
 
     public void setVersion(boolean version) {
         this.version = version;
-    }
-
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
     }
 }
