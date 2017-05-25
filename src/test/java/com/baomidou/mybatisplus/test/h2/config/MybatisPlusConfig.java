@@ -19,7 +19,7 @@ import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 
 /**
  * <p>
- * TODO class
+ * Mybatis Plus Config
  * </p>
  *
  * @author Caratacus
@@ -42,7 +42,8 @@ public class MybatisPlusConfig {
         PaginationInterceptor pagination = new PaginationInterceptor();
         OptimisticLockInterceptor optLock = new OptimisticLockInterceptor();
         sqlSessionFactory.setPlugins(new Interceptor[]{
-                pagination,optLock
+                pagination,
+                optLock
         });
         sqlSessionFactory.setGlobalConfig(globalConfiguration);
         return sqlSessionFactory.getObject();
