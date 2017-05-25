@@ -48,6 +48,7 @@ import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
  * @author hubin
  * @Date 2016-04-20
  */
+@Transactional(readOnly = true)
 public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 
     private static final Log logger = LogFactory.getLog(ServiceImpl.class);

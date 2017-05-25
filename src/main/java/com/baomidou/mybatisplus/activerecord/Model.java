@@ -41,6 +41,7 @@ import com.baomidou.mybatisplus.toolkit.StringUtils;
  * @Date 2016-11-06
  */
 @SuppressWarnings({"rawtypes"})
+@Transactional(readOnly = true)
 public abstract class Model<T extends Model> implements Serializable {
 
     private static final long serialVersionUID = 1L;
