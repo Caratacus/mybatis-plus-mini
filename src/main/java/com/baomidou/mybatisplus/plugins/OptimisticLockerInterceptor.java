@@ -35,13 +35,13 @@ import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
  * <BR>
  * How to use?<BR>
  *     (1) Define an Entity and add {@link Version} annotation on one entity field.<BR>
- *     (2) Add {@link OptimisticLockInterceptor} into mybatis plugin.
+ *     (2) Add {@link OptimisticLockerInterceptor} into mybatis plugin.
  *
  * How to work?<BR>
  *     if update entity with version column=1:<BR>
- *         (1) no {@link OptimisticLockInterceptor}:<BR>
+ *         (1) no {@link OptimisticLockerInterceptor}:<BR>
  *             SQL: update tbl_test set name='abc' where id=100001;
- *         (2) add {@link OptimisticLockInterceptor}:<BR>
+ *         (2) add {@link OptimisticLockerInterceptor}:<BR>
  *             SQL: update tbl_test set name='abc',version=2 where id=100001 and version=1;
  * </p>
  *
@@ -50,7 +50,7 @@ import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
  */
 @Intercepts({
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
-public class OptimisticLockInterceptor implements Interceptor {
+public class OptimisticLockerInterceptor implements Interceptor {
 
     private final Map<Class<?>, EntityField> versionFieldCache = new HashMap<>();
     private final Map<Class<?>, List<EntityField>> entityFieldsCache = new HashMap<>();
