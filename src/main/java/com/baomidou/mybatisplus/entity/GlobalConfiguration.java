@@ -178,7 +178,7 @@ public class GlobalConfiguration implements Serializable {
     }
 
     public String getIdentifierQuote() {
-        if (null == identifierQuote) {
+        if (null == identifierQuote && dbType != null) {
             return DBType.getQuote(dbType);
         }
         return identifierQuote;

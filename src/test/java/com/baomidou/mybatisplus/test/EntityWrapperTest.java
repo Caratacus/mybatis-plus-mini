@@ -79,10 +79,10 @@ public class EntityWrapperTest {
          * 实体带where orderby
 		 */
         ew.setEntity(new User(1));
-        ew.where("name={0}", "'123'").orderBy("id", false);
+        ew.where("name={0}", "'123'").orderBy("id");
         String sqlSegment = ew.toString();
         System.err.println("test12 = " + sqlSegment);
-        Assert.assertEquals("AND (name=?)\nORDER BY id DESC", sqlSegment);
+        Assert.assertEquals("AND (name=?)\nORDER BY id", sqlSegment);
     }
 
     @Test
@@ -91,16 +91,16 @@ public class EntityWrapperTest {
          * 实体排序
 		 */
         ew.setEntity(new User(1));
-        ew.orderBy("id", false);
+        ew.orderBy("id");
         String sqlSegment = ew.toString();
         System.err.println("test13 = " + sqlSegment);
-        Assert.assertEquals("ORDER BY id DESC", sqlSegment);
+        Assert.assertEquals("ORDER BY id", sqlSegment);
     }
 
     @Test
     public void test21() {
         /*
-		 * 无实体 where ifneed orderby
+         * 无实体 where ifneed orderby
 		 */
         ew.where("name={0}", "'123'").addFilterIfNeed(false, "id=1").orderBy("id");
         String sqlSegment = ew.toString();
@@ -110,26 +110,26 @@ public class EntityWrapperTest {
 
     @Test
     public void test22() {
-        ew.where("name={0}", "'123'").orderBy("id", false);
+        ew.where("name={0}", "'123'").orderBy("id");
         String sqlSegment = ew.toString();
         System.err.println("test22 = " + sqlSegment);
-        Assert.assertEquals("WHERE (name=?)\nORDER BY id DESC", sqlSegment);
+        Assert.assertEquals("WHERE (name=?)\nORDER BY id", sqlSegment);
     }
 
     @Test
     public void test23() {
-		/*
-		 * 无实体查询，只排序
+        /*
+         * 无实体查询，只排序
 		 */
-        ew.orderBy("id", false);
+        ew.orderBy("id");
         String sqlSegment = ew.toString();
         System.err.println("test23 = " + sqlSegment);
-        Assert.assertEquals("ORDER BY id DESC", sqlSegment);
+        Assert.assertEquals("ORDER BY id", sqlSegment);
     }
 
     @Test
     public void testNoTSQL() {
-		/*
+        /*
 		 * 实体 filter orderby
 		 */
         ew.setEntity(new User(1));
@@ -347,11 +347,11 @@ public class EntityWrapperTest {
      */
     @Test
     public void testLimit() {
-        ew.where("name={0}", "'123'").orderBy("id", false);
+        ew.where("name={0}", "'123'").orderBy("id");
         ew.last("limit 1,2");
         String sqlSegment = ew.toString();
         System.err.println("testLimit = " + sqlSegment);
-        Assert.assertEquals("WHERE (name=?)\nORDER BY id DESC limit 1,2", sqlSegment);
+        Assert.assertEquals("WHERE (name=?)\nORDER BY id limit 1,2", sqlSegment);
     }
 
     /**
