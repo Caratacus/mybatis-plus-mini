@@ -97,12 +97,14 @@ public class H2MetaObjectHandlerTest {
         userMapper.insert(user);
         System.out.println("before update: testDate=" + user.getLastUpdatedDt());
 
-        user.setName("999");
-        userMapper.updateById(user);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
         Long id = user.getId();
         H2UserMetaObj userDB = userMapper.selectById(id);
-
+        //MyMetaObjectHandler.insertFill()
+        Assert.assertEquals(3, userDB.getTestType().intValue());
+        user.setName("999");
+        userMapper.updateById(user);
+        userDB = userMapper.selectById(id);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
         Assert.assertEquals("999", userDB.getName());
 
         Date versionDate = userDB.getLastUpdatedDt();

@@ -50,6 +50,11 @@ public class MyMetaObjectHandler extends MetaObjectHandler {
         System.out.println("*************************");
         System.out.println("insert fill");
         System.out.println("*************************");
+        Object testType = getFieldValByName("testType", metaObject);
+        System.out.println("testType="+testType);
+        if(testType==null){
+            setFieldValByName("testType", 3, metaObject);
+        }
     }
 
     @Override
@@ -57,9 +62,6 @@ public class MyMetaObjectHandler extends MetaObjectHandler {
         System.out.println("*************************");
         System.out.println("update fill");
         System.out.println("*************************");
-//        Object lastUpdatedDt = metaObject.getValue("lastUpdatedDt");
-//        metaObject.setValue("et.lastUpdatedDt", new Timestamp(System.currentTimeMillis()));
-
         setFieldValByName("lastUpdatedDt", new Timestamp(System.currentTimeMillis()), metaObject);
     }
 }
