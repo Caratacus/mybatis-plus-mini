@@ -38,7 +38,7 @@ import com.baomidou.mybatisplus.test.h2.entity.service.IH2UserNoVersionService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:h2/spring-test-h2.xml"})
-public class H2UserNoVersionTest {
+public class H2UserNumVersionTest {
 
     @Autowired
     private IH2UserNoVersionService userService;
@@ -60,7 +60,7 @@ public class H2UserNoVersionTest {
 
     private static void insertUsers(Statement stmt) throws SQLException, IOException {
         String filename = "user.insert.sql";
-        String filePath = H2UserNoVersionTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
+        String filePath = H2UserNumVersionTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
         try (
                 BufferedReader reader = new BufferedReader(new FileReader(filePath))
         ) {
@@ -73,7 +73,7 @@ public class H2UserNoVersionTest {
 
     private static String readFile(String filename) {
         StringBuilder builder = new StringBuilder();
-        String filePath = H2UserNoVersionTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
+        String filePath = H2UserNumVersionTest.class.getClassLoader().getResource("").getPath() + "/h2/" + filename;
         try (
                 BufferedReader reader = new BufferedReader(new FileReader(filePath))
         ) {

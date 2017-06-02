@@ -48,6 +48,17 @@ public abstract class MetaObjectHandler {
     public abstract void updateFill(MetaObject metaObject);
 
     /**
+     * Common method to set value.
+     *
+     * @param fieldName
+     * @param fieldVal
+     * @param metaObject
+     */
+    public void setFieldValByName(String fieldName, Object fieldVal, MetaObject metaObject){
+        metaObject.setValue("et."+fieldName, fieldVal);
+    }
+
+    /**
      * 开启插入填充
      */
     public boolean openInsertFill() {

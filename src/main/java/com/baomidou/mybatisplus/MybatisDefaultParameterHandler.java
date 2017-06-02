@@ -130,7 +130,17 @@ public class MybatisDefaultParameterHandler extends DefaultParameterHandler {
                 }
                 return objList;
             } else {
-                TableInfo tableInfo = TableInfoHelper.getTableInfo(parameterObject.getClass());
+                TableInfo tableInfo;
+                if(parameterObject instanceof java.util.Map){
+                    Object et = ((java.util.Map)parameterObject).get("et");
+                    if(et!=null){
+                        tableInfo = TableInfoHelper.getTableInfo(et.getClass());
+                    }else{
+                        tableInfo = null;
+                    }
+                }else{
+                    tableInfo = TableInfoHelper.getTableInfo(parameterObject.getClass());
+                }
                 return populateKeys(metaObjectHandler, tableInfo, ms, parameterObject);
             }
         }
