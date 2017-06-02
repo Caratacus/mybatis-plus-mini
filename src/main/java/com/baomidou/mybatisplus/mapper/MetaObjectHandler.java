@@ -73,6 +73,12 @@ public abstract class MetaObjectHandler {
         return this;
     }
 
+    /**
+     * get value from java bean by propertyName
+     * @param fieldName java bean property name
+     * @param metaObject parameter wrapper
+     * @return
+     */
     public Object getFieldValByName(String fieldName, MetaObject metaObject){
         String[] fieldNames = metaObject.getGetterNames();
         boolean containsEt = false;
