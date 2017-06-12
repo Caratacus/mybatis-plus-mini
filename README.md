@@ -12,10 +12,6 @@ mybatis-plus-mini
 * Mybatis-Plus(MP) support physical pagination for the mentioned types below.
 * You just need to add PaginationInterceptor into mybatis plugins.
 
-##Optimistic Lock
-* You will never care about version, never set version(version=version+1, ect..) manually
-* Just add an annotation: @Version(com.baomidou.mybatisplus.annotations.Version), Done!
-
 ##Auto Fill common fields
 * MP support auto fill fields.
 * (1)You just need to define a class extends MetaObjectHandler;

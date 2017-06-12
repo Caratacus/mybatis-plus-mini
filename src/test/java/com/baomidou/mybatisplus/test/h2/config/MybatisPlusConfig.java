@@ -13,14 +13,12 @@ import org.springframework.core.io.ResourceLoader;
 import com.baomidou.mybatisplus.MybatisConfiguration;
 import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
-import com.baomidou.mybatisplus.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.plugins.SqlPrintInterceptor;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 
 /**
  * <p>
- * Mybatis Plus Config
+ * TODO class
  * </p>
  *
  * @author Caratacus
@@ -41,11 +39,8 @@ public class MybatisPlusConfig {
         configuration.setJdbcTypeForNull(JdbcType.NULL);
         sqlSessionFactory.setConfiguration(configuration);
         PaginationInterceptor pagination = new PaginationInterceptor();
-        OptimisticLockerInterceptor optLock = new OptimisticLockerInterceptor();
         sqlSessionFactory.setPlugins(new Interceptor[]{
-                pagination,
-                optLock,
-                new SqlPrintInterceptor()
+                pagination
         });
         sqlSessionFactory.setGlobalConfig(globalConfiguration);
         return sqlSessionFactory.getObject();
@@ -53,8 +48,6 @@ public class MybatisPlusConfig {
 
     @Bean
     public GlobalConfiguration globalConfiguration() {
-        GlobalConfiguration globalConfiguration = new GlobalConfiguration();
-        globalConfiguration.setIdType("ID_WORKER");
-        return globalConfiguration;
+        return new GlobalConfiguration();
     }
 }

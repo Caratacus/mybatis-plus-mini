@@ -1,27 +1,9 @@
-/**
- * Copyright (c) 2011-2016, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.service.impl;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.binding.MapperMethod;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +18,6 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.mybatisplus.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.toolkit.MapUtils;
 import com.baomidou.mybatisplus.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
@@ -51,8 +32,6 @@ import com.baomidou.mybatisplus.toolkit.TableInfoHelper;
  */
 @Transactional(readOnly = true)
 public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
-
-    private static final Log logger = LogFactory.getLog(ServiceImpl.class);
 
     @Autowired
     protected M baseMapper;
@@ -73,7 +52,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected Class<T> currentModleClass() {
+    protected Class<T> currentModelClass() {
         return ReflectionKit.getSuperClassGenricType(getClass(), 1);
     }
 
@@ -83,7 +62,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
      * </p>
      */
     protected SqlSession sqlSessionBatch() {
-        return SqlHelper.sqlSessionBatch(currentModleClass());
+        return SqlHelper.sqlSessionBatch(currentModelClass());
     }
 
     /**
@@ -93,7 +72,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
      * @return
      */
     protected String sqlStatement(SqlMethod sqlMethod) {
-        return SqlHelper.table(currentModleClass()).getSqlStatement(sqlMethod.getMethod());
+        return SqlHelper.table(currentModelClass()).getSqlStatement(sqlMethod.getMethod());
     }
 
     @Transactional
@@ -134,8 +113,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
             }
             batchSqlSession.flushStatements();
         } catch (Exception e) {
-            logger.error("Error: Cannot execute insertBatch Method. Cause:" + e);
-            return false;
+            throw new MybatisPlusException("Error: Cannot execute insertBatch Method. Cause", e);
         }
         return true;
 
@@ -191,8 +169,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
             }
             batchSqlSession.flushStatements();
         } catch (Exception e) {
-            logger.error("Error: Cannot execute insertOrUpdateBatch Method. Cause:" + e);
-            return false;
+            throw new MybatisPlusException("Error: Cannot execute insertBatch Method. Cause", e);
         }
         return true;
     }
@@ -200,14 +177,6 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     @Transactional
     public boolean deleteById(Serializable id) {
         return retBool(baseMapper.deleteById(id));
-    }
-
-    @Transactional
-    public boolean deleteByMap(Map<String, Object> columnMap) {
-        if (MapUtils.isEmpty(columnMap)) {
-            throw new MybatisPlusException("deleteByMap columnMap is empty.");
-        }
-        return retBool(baseMapper.deleteByMap(columnMap));
     }
 
     @Transactional
@@ -249,17 +218,14 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
             int size = entityList.size();
             String sqlStatement = sqlStatement(SqlMethod.UPDATE_BY_ID);
             for (int i = 0; i < size; i++) {
-                MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
-                param.put("et", entityList.get(i));
-                batchSqlSession.update(sqlStatement, param);
+                batchSqlSession.update(sqlStatement, entityList.get(i));
                 if (i >= 1 && i % batchSize == 0) {
                     batchSqlSession.flushStatements();
                 }
             }
             batchSqlSession.flushStatements();
         } catch (Exception e) {
-            logger.error("Error: Cannot execute insertBatch Method. Cause:" + e);
-            return false;
+            throw new MybatisPlusException("Error: Cannot execute insertBatch Method. Cause", e);
         }
         return true;
     }
@@ -270,10 +236,6 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 
     public List<T> selectBatchIds(List<? extends Serializable> idList) {
         return baseMapper.selectBatchIds(idList);
-    }
-
-    public List<T> selectByMap(Map<String, Object> columnMap) {
-        return baseMapper.selectByMap(columnMap);
     }
 
     public T selectOne(Wrapper wrapper) {
@@ -311,11 +273,13 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Page<Map<String, Object>> selectMapsPage(Page page, Wrapper wrapper) {
+        SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.selectMapsPage(page, wrapper));
         return page;
     }
 
     public Page<T> selectPage(Page<T> page, Wrapper wrapper) {
+        SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.selectPage(page, wrapper));
         return page;
     }

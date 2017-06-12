@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2011-2020, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.toolkit;
 
 import java.lang.reflect.Field;
@@ -46,7 +31,7 @@ import com.baomidou.mybatisplus.entity.TableFieldInfo;
 import com.baomidou.mybatisplus.entity.TableInfo;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.mapper.IKeyGenerator;
+import com.baomidou.mybatisplus.incrementer.Incrementer;
 
 /**
  * <p>
@@ -142,7 +127,7 @@ public class TableInfoHelper {
         tableInfo.setTableName(tableName);
 
         // 开启了自定义 KEY 生成器
-        if (null != globalConfig.getKeyGenerator()) {
+        if (null != globalConfig.getIncrementer()) {
             tableInfo.setKeySequence(clazz.getAnnotation(KeySequence.class));
         }
 
@@ -152,20 +137,23 @@ public class TableInfoHelper {
         }
         List<TableFieldInfo> fieldList = new ArrayList<>();
         List<Field> list = getAllFields(clazz);
+        // 标记是否读取到主键
+        boolean isReadPK = false;
         boolean existTableId = existTableId(list);
         for (Field field : list) {
-
-            /*
-             * 主键ID 初始化
-             */
-            if (existTableId) {
-                if (initTableId(globalConfig, tableInfo, field, clazz)) {
+           /*
+            * 主键ID 初始化
+            */
+            if (!isReadPK) {
+                if (existTableId) {
+                    if (initTableId(globalConfig, tableInfo, field, clazz)) {
+                        continue;
+                    }
+                } else if (initFieldId(globalConfig, tableInfo, field, clazz)) {
                     continue;
                 }
-            } else if (initFieldId(globalConfig, tableInfo, field, clazz)) {
-                continue;
+                isReadPK = true;
             }
-
             /*
              * 字段初始化
              */
@@ -395,9 +383,9 @@ public class TableInfoHelper {
      */
     public static KeyGenerator genKeyGenerator(TableInfo tableInfo, MapperBuilderAssistant builderAssistant,
                                                String baseStatementId, LanguageDriver languageDriver) {
-        IKeyGenerator keyGenerator = GlobalConfigUtils.getKeyGenerator(builderAssistant.getConfiguration());
-        if (null == keyGenerator) {
-            throw new IllegalArgumentException("not configure IKeyGenerator implementation class.");
+        Incrementer incrementer = GlobalConfigUtils.getIncrementer(builderAssistant.getConfiguration());
+        if (null == incrementer) {
+            throw new MybatisPlusException("Error: not configure Incrementer implementation class.");
         }
         String id = baseStatementId + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         Class<?> resultTypeClass = tableInfo.getKeySequence().idClazz();
@@ -405,15 +393,15 @@ public class TableInfoHelper {
         String keyProperty = tableInfo.getKeyProperty();
         String keyColumn = tableInfo.getKeyColumn();
         SqlSource sqlSource = languageDriver.createSqlSource(builderAssistant.getConfiguration(),
-                keyGenerator.executeSql(tableInfo), null);
+                incrementer.getSequenceQuery(tableInfo.getKeySequence().value()), null);
         builderAssistant.addMappedStatement(id, sqlSource, statementType, SqlCommandType.SELECT, null, null, null,
                 null, null, resultTypeClass, null, false, false, false,
                 new NoKeyGenerator(), keyProperty, keyColumn, null, languageDriver, null);
         id = builderAssistant.applyCurrentNamespace(id, false);
         MappedStatement keyStatement = builderAssistant.getConfiguration().getMappedStatement(id, false);
-        SelectKeyGenerator answer = new SelectKeyGenerator(keyStatement, true);
-        builderAssistant.getConfiguration().addKeyGenerator(id, answer);
-        return answer;
+        SelectKeyGenerator keyGenerator = new SelectKeyGenerator(keyStatement, true);
+        builderAssistant.getConfiguration().addKeyGenerator(id, keyGenerator);
+        return keyGenerator;
     }
 
 }

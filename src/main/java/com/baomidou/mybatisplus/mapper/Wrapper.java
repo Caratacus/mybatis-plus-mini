@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2011-2014, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.mapper;
 
 import java.io.Serializable;
@@ -31,6 +16,7 @@ import com.baomidou.mybatisplus.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.toolkit.MapUtils;
 import com.baomidou.mybatisplus.toolkit.SqlUtils;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
+
 
 /**
  * <p>
@@ -80,13 +66,6 @@ public abstract class Wrapper implements Serializable {
         return StringUtils.isEmpty(sqlSelect) ? null : stripSqlInjection(sqlSelect);
     }
 
-    public Wrapper setSqlSelect(String sqlSelect) {
-        if (StringUtils.isNotEmpty(sqlSelect)) {
-            this.sqlSelect = sqlSelect;
-        }
-        return this;
-    }
-
     /**
      * 使用对象封装的setsqlselect
      *
@@ -114,6 +93,13 @@ public abstract class Wrapper implements Serializable {
         return this;
     }
 
+    public Wrapper setSqlSelect(String sqlSelect) {
+        if (StringUtils.isNotEmpty(sqlSelect)) {
+            this.sqlSelect = sqlSelect;
+        }
+        return this;
+    }
+
     /**
      * SQL 片段 (子类实现)
      */
@@ -123,7 +109,7 @@ public abstract class Wrapper implements Serializable {
         StringBuilder sb = new StringBuilder("Wrapper:");
         String sqlSegment = getSqlSegment();
         if (StringUtils.isNotEmpty(sqlSegment)) {
-            sb.append(sqlSegment.replaceAll("#\\{" + getParamAlias() + ".paramNameValuePairs.MPGENVAL[0-9]+}", "\\?")).append("\n");
+            sb.append(getSqlSegment().replaceAll("#\\{" + getParamAlias() + ".paramNameValuePairs.MPGENVAL[0-9]+}", "\\?")).append("\n");
         }
         Object entity = getEntity();
         if (entity != null) {
@@ -142,13 +128,13 @@ public abstract class Wrapper implements Serializable {
      * 输出: WHERE (NAME='zhangsan' AND id=123)
      * </p>
      *
-     * @param isAdd
-     * @param sqlWhere where语句
-     * @param params   参数集
+     * @param expression
+     * @param sqlWhere   where语句
+     * @param params     参数集
      * @return this
      */
-    public Wrapper where(boolean isAdd, String sqlWhere, Object... params) {
-        if (isAdd)
+    public Wrapper where(boolean expression, String sqlWhere, Object... params) {
+        if (expression)
             sql.WHERE(formatSql(sqlWhere, params));
         return this;
     }
@@ -176,13 +162,13 @@ public abstract class Wrapper implements Serializable {
      * 等同于SQL的"field=value"表达式
      * </p>
      *
-     * @param isAdd
+     * @param expression
      * @param column
      * @param params
      * @return
      */
-    public Wrapper eq(boolean isAdd, String column, Object params) {
-        if (isAdd)
+    public Wrapper eq(boolean expression, String column, Object params) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s = {0}", column), params));
         return this;
     }
@@ -205,13 +191,13 @@ public abstract class Wrapper implements Serializable {
      * 等同于SQL的"field <> value"表达式
      * </p>
      *
-     * @param isAdd
+     * @param expression
      * @param column
      * @param params
      * @return
      */
-    public Wrapper ne(boolean isAdd, String column, Object params) {
-        if (isAdd)
+    public Wrapper ne(boolean expression, String column, Object params) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s <> {0}", column), params));
         return this;
     }
@@ -235,13 +221,13 @@ public abstract class Wrapper implements Serializable {
      * 等同于SQL的"field=value"表达式
      * </p>
      *
-     * @param isAdd
+     * @param expression
      * @param params
      * @return
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public Wrapper allEq(boolean isAdd, Map<String, Object> params) {
-        if (isAdd && MapUtils.isNotEmpty(params)) {
+    public Wrapper allEq(boolean expression, Map<String, Object> params) {
+        if (expression && MapUtils.isNotEmpty(params)) {
             Iterator iterator = params.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
@@ -274,13 +260,13 @@ public abstract class Wrapper implements Serializable {
      * 等同于SQL的"field>value"表达式
      * </p>
      *
-     * @param isAdd
+     * @param expression
      * @param column
      * @param params
      * @return
      */
-    public Wrapper gt(boolean isAdd, String column, Object params) {
-        if (isAdd)
+    public Wrapper gt(boolean expression, String column, Object params) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s > {0}", column), params));
         return this;
     }
@@ -303,13 +289,13 @@ public abstract class Wrapper implements Serializable {
      * 等同于SQL的"field>=value"表达式
      * </p>
      *
-     * @param isAdd
+     * @param expression
      * @param column
      * @param params
      * @return
      */
-    public Wrapper ge(boolean isAdd, String column, Object params) {
-        if (isAdd)
+    public Wrapper ge(boolean expression, String column, Object params) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s >= {0}", column), params));
         return this;
     }
@@ -332,13 +318,13 @@ public abstract class Wrapper implements Serializable {
      * 等同于SQL的"field<value"表达式
      * </p>
      *
-     * @param isAdd
+     * @param expression
      * @param column
      * @param params
      * @return
      */
-    public Wrapper lt(boolean isAdd, String column, Object params) {
-        if (isAdd)
+    public Wrapper lt(boolean expression, String column, Object params) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s < {0}", column), params));
         return this;
     }
@@ -361,13 +347,13 @@ public abstract class Wrapper implements Serializable {
      * 等同于SQL的"field<=value"表达式
      * </p>
      *
-     * @param isAdd
+     * @param expression
      * @param column
      * @param params
      * @return
      */
-    public Wrapper le(boolean isAdd, String column, Object params) {
-        if (isAdd)
+    public Wrapper le(boolean expression, String column, Object params) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s <= {0}", column), params));
         return this;
     }
@@ -390,13 +376,13 @@ public abstract class Wrapper implements Serializable {
      * AND 连接后续条件
      * </p>
      *
-     * @param isAdd
-     * @param sqlAnd and条件语句
-     * @param params 参数集
+     * @param expression
+     * @param sqlAnd     and条件语句
+     * @param params     参数集
      * @return this
      */
-    public Wrapper and(boolean isAdd, String sqlAnd, Object... params) {
-        if (isAdd)
+    public Wrapper and(boolean expression, String sqlAnd, Object... params) {
+        if (expression)
             sql.AND().WHERE(formatSql(sqlAnd, params));
         return this;
     }
@@ -423,13 +409,13 @@ public abstract class Wrapper implements Serializable {
      * (name='zhangsan' AND id=11) AND (statu=1)
      * </p>
      *
-     * @param isAdd
-     * @param sqlAnd AND 条件语句
-     * @param params 参数值
+     * @param expression
+     * @param sqlAnd     AND 条件语句
+     * @param params     参数值
      * @return this
      */
-    public Wrapper andNew(boolean isAdd, String sqlAnd, Object... params) {
-        if (isAdd)
+    public Wrapper andNew(boolean expression, String sqlAnd, Object... params) {
+        if (expression)
             sql.AND_NEW().WHERE(formatSql(sqlAnd, params));
         return this;
     }
@@ -481,13 +467,13 @@ public abstract class Wrapper implements Serializable {
      * 添加OR条件
      * </p>
      *
-     * @param isAdd
-     * @param sqlOr  or 条件语句
-     * @param params 参数集
+     * @param expression
+     * @param sqlOr      or 条件语句
+     * @param params     参数集
      * @return this
      */
-    public Wrapper or(boolean isAdd, String sqlOr, Object... params) {
-        if (isAdd) {
+    public Wrapper or(boolean expression, String sqlOr, Object... params) {
+        if (expression) {
             if (StringUtils.isEmpty(sql.toString())) {
                 AND_OR = "OR";
             }
@@ -518,13 +504,13 @@ public abstract class Wrapper implements Serializable {
      * (name='zhangsan' AND id=11) OR (statu=1)
      * </p>
      *
-     * @param isAdd
-     * @param sqlOr  AND 条件语句
-     * @param params 参数值
+     * @param expression
+     * @param sqlOr      AND 条件语句
+     * @param params     参数值
      * @return this
      */
-    public Wrapper orNew(boolean isAdd, String sqlOr, Object... params) {
-        if (isAdd) {
+    public Wrapper orNew(boolean expression, String sqlOr, Object... params) {
+        if (expression) {
             if (StringUtils.isEmpty(sql.toString())) {
                 AND_OR = "OR";
             }
@@ -558,12 +544,12 @@ public abstract class Wrapper implements Serializable {
      * eg: ew.where("name='zhangsan'").groupBy("id,name")
      * </p>
      *
-     * @param isAdd
-     * @param columns SQL 中的 Group by 语句，无需输入 Group By 关键字
+     * @param expression
+     * @param columns    SQL 中的 Group by 语句，无需输入 Group By 关键字
      * @return this
      */
-    public Wrapper groupBy(boolean isAdd, String columns) {
-        if (isAdd)
+    public Wrapper groupBy(boolean expression, String columns) {
+        if (expression)
             sql.GROUP_BY(columns);
         return this;
     }
@@ -591,13 +577,13 @@ public abstract class Wrapper implements Serializable {
      * eg: ew.groupBy("id,name").having("id={0}",22).and("password is not null")
      * </p>
      *
-     * @param isAdd
-     * @param sqlHaving having关键字后面跟随的语句
-     * @param params    参数集
+     * @param expression
+     * @param sqlHaving  having关键字后面跟随的语句
+     * @param params     参数集
      * @return EntityWrapper
      */
-    public Wrapper having(boolean isAdd, String sqlHaving, Object... params) {
-        if (isAdd)
+    public Wrapper having(boolean expression, String sqlHaving, Object... params) {
+        if (expression)
             sql.HAVING(formatSql(sqlHaving, params));
         return this;
     }
@@ -627,12 +613,12 @@ public abstract class Wrapper implements Serializable {
      * ).orderBy("id,name")
      * </p>
      *
-     * @param isAdd
-     * @param columns SQL 中的 order by 语句，无需输入 Order By 关键字
+     * @param expression
+     * @param columns    SQL 中的 order by 语句，无需输入 Order By 关键字
      * @return this
      */
-    public Wrapper orderBy(boolean isAdd, String columns) {
-        if (isAdd)
+    public Wrapper orderBy(boolean expression, String columns) {
+        if (expression)
             sql.ORDER_BY(columns);
         return this;
     }
@@ -657,13 +643,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * LIKE条件语句，value中无需前后%
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值
      * @return this
      */
-    public Wrapper like(boolean isAdd, String column, String value) {
-        if (isAdd)
+    public Wrapper like(boolean expression, String column, String value) {
+        if (expression)
             handerLike(column, value, SqlLike.DEFAULT, false);
         return this;
     }
@@ -682,13 +668,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * NOT LIKE条件语句，value中无需前后%
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值
      * @return this
      */
-    public Wrapper notLike(boolean isAdd, String column, String value) {
-        if (isAdd)
+    public Wrapper notLike(boolean expression, String column, String value) {
+        if (expression)
             handerLike(column, value, SqlLike.DEFAULT, true);
         return this;
     }
@@ -726,14 +712,14 @@ public abstract class Wrapper implements Serializable {
     /**
      * LIKE条件语句，value中无需前后%
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值
      * @param type
      * @return this
      */
-    public Wrapper like(boolean isAdd, String column, String value, SqlLike type) {
-        if (isAdd)
+    public Wrapper like(boolean expression, String column, String value, SqlLike type) {
+        if (expression)
             handerLike(column, value, type, false);
         return this;
     }
@@ -753,14 +739,14 @@ public abstract class Wrapper implements Serializable {
     /**
      * NOT LIKE条件语句，value中无需前后%
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值
      * @param type
      * @return this
      */
-    public Wrapper notLike(boolean isAdd, String column, String value, SqlLike type) {
-        if (isAdd)
+    public Wrapper notLike(boolean expression, String column, String value, SqlLike type) {
+        if (expression)
             handerLike(column, value, type, true);
         return this;
     }
@@ -780,12 +766,12 @@ public abstract class Wrapper implements Serializable {
     /**
      * is not null 条件
      *
-     * @param isAdd
-     * @param columns 字段名称。多个字段以逗号分隔。
+     * @param expression
+     * @param columns    字段名称。多个字段以逗号分隔。
      * @return this
      */
-    public Wrapper isNotNull(boolean isAdd, String columns) {
-        if (isAdd)
+    public Wrapper isNotNull(boolean expression, String columns) {
+        if (expression)
             sql.IS_NOT_NULL(columns);
         return this;
     }
@@ -803,12 +789,12 @@ public abstract class Wrapper implements Serializable {
     /**
      * is not null 条件
      *
-     * @param isAdd
-     * @param columns 字段名称。多个字段以逗号分隔。
+     * @param expression
+     * @param columns    字段名称。多个字段以逗号分隔。
      * @return this
      */
-    public Wrapper isNull(boolean isAdd, String columns) {
-        if (isAdd)
+    public Wrapper isNull(boolean expression, String columns) {
+        if (expression)
             sql.IS_NULL(columns);
         return this;
     }
@@ -826,12 +812,12 @@ public abstract class Wrapper implements Serializable {
     /**
      * EXISTS 条件语句，目前适配mysql及oracle
      *
-     * @param isAdd
-     * @param value 匹配值
+     * @param expression
+     * @param value      匹配值
      * @return this
      */
-    public Wrapper exists(boolean isAdd, String value) {
-        if (isAdd)
+    public Wrapper exists(boolean expression, String value) {
+        if (expression)
             sql.EXISTS(value);
         return this;
     }
@@ -849,12 +835,12 @@ public abstract class Wrapper implements Serializable {
     /**
      * NOT EXISTS条件语句
      *
-     * @param isAdd
-     * @param value 匹配值
+     * @param expression
+     * @param value      匹配值
      * @return this
      */
-    public Wrapper notExists(boolean isAdd, String value) {
-        if (isAdd)
+    public Wrapper notExists(boolean expression, String value) {
+        if (expression)
             sql.NOT_EXISTS(value);
         return this;
     }
@@ -872,13 +858,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * IN 条件语句，目前适配mysql及oracle
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  逗号拼接的字符串
+     * @param expression
+     * @param column     字段名称
+     * @param value      逗号拼接的字符串
      * @return this
      */
-    public Wrapper in(boolean isAdd, String column, String value) {
-        if (isAdd && StringUtils.isNotEmpty(value)) {
+    public Wrapper in(boolean expression, String column, String value) {
+        if (expression && StringUtils.isNotEmpty(value)) {
             in(column, StringUtils.splitWorker(value, ",", -1, false));
         }
         return this;
@@ -898,13 +884,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * NOT IN条件语句
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  逗号拼接的字符串
+     * @param expression
+     * @param column     字段名称
+     * @param value      逗号拼接的字符串
      * @return this
      */
-    public Wrapper notIn(boolean isAdd, String column, String value) {
-        if (isAdd && StringUtils.isNotEmpty(value)) {
+    public Wrapper notIn(boolean expression, String column, String value) {
+        if (expression && StringUtils.isNotEmpty(value)) {
             notIn(column, StringUtils.splitWorker(value, ",", -1, false));
         }
         return this;
@@ -924,13 +910,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * IN 条件语句，目前适配mysql及oracle
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值 List集合
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值 List集合
      * @return this
      */
-    public Wrapper in(boolean isAdd, String column, Collection<?> value) {
-        if (isAdd && CollectionUtils.isNotEmpty(value))
+    public Wrapper in(boolean expression, String column, Collection<?> value) {
+        if (expression && CollectionUtils.isNotEmpty(value))
             sql.WHERE(formatSql(inExpression(column, value, false), value.toArray()));
         return this;
     }
@@ -949,13 +935,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * NOT IN 条件语句，目前适配mysql及oracle
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值 List集合
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值 List集合
      * @return this
      */
-    public Wrapper notIn(boolean isAdd, String column, Collection<?> value) {
-        if (isAdd && CollectionUtils.isNotEmpty(value))
+    public Wrapper notIn(boolean expression, String column, Collection<?> value) {
+        if (expression && CollectionUtils.isNotEmpty(value))
             sql.WHERE(formatSql(inExpression(column, value, true), value.toArray()));
         return this;
     }
@@ -974,13 +960,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * IN 条件语句，目前适配mysql及oracle
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值 object数组
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值 object数组
      * @return this
      */
-    public Wrapper in(boolean isAdd, String column, Object[] value) {
-        if (isAdd && ArrayUtils.isNotEmpty(value))
+    public Wrapper in(boolean expression, String column, Object[] value) {
+        if (expression && ArrayUtils.isNotEmpty(value))
             sql.WHERE(formatSql(inExpression(column, Arrays.asList(value), false), value));
         return this;
     }
@@ -999,13 +985,13 @@ public abstract class Wrapper implements Serializable {
     /**
      * NOT IN 条件语句，目前适配mysql及oracle
      *
-     * @param isAdd
-     * @param column 字段名称
-     * @param value  匹配值 object数组
+     * @param expression
+     * @param column     字段名称
+     * @param value      匹配值 object数组
      * @return this
      */
-    public Wrapper notIn(boolean isAdd, String column, Object... value) {
-        if (isAdd && ArrayUtils.isNotEmpty(value))
+    public Wrapper notIn(boolean expression, String column, Object... value) {
+        if (expression && ArrayUtils.isNotEmpty(value))
             sql.WHERE(formatSql(inExpression(column, Arrays.asList(value), true), value));
         return this;
     }
@@ -1053,14 +1039,14 @@ public abstract class Wrapper implements Serializable {
     /**
      * betwwee 条件语句
      *
-     * @param isAdd
-     * @param column 字段名称
+     * @param expression
+     * @param column     字段名称
      * @param val1
      * @param val2
      * @return this
      */
-    public Wrapper between(boolean isAdd, String column, Object val1, Object val2) {
-        if (isAdd)
+    public Wrapper between(boolean expression, String column, Object val1, Object val2) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s BETWEEN {0} AND {1}", column), val1, val2));
         return this;
     }
@@ -1080,14 +1066,14 @@ public abstract class Wrapper implements Serializable {
     /**
      * NOT betwwee 条件语句
      *
-     * @param isAdd
-     * @param column 字段名称
+     * @param expression
+     * @param column     字段名称
      * @param val1
      * @param val2
      * @return this
      */
-    public Wrapper notBetween(boolean isAdd, String column, Object val1, Object val2) {
-        if (isAdd)
+    public Wrapper notBetween(boolean expression, String column, Object val1, Object val2) {
+        if (expression)
             sql.WHERE(formatSql(String.format("%s NOT BETWEEN {0} AND {1}", column), val1, val2));
         return this;
     }

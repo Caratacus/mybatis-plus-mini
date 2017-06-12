@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2011-2014, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.toolkit;
 
 import java.sql.Connection;
@@ -34,10 +19,10 @@ import com.baomidou.mybatisplus.enums.DBType;
 import com.baomidou.mybatisplus.enums.FieldStrategy;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.mapper.AutoSqlInjector;
-import com.baomidou.mybatisplus.mapper.IKeyGenerator;
-import com.baomidou.mybatisplus.mapper.ISqlInjector;
+import com.baomidou.mybatisplus.incrementer.Incrementer;
 import com.baomidou.mybatisplus.mapper.MetaObjectHandler;
+import com.baomidou.mybatisplus.sqlInjector.AutoSqlInjector;
+import com.baomidou.mybatisplus.sqlInjector.ISqlInjector;
 
 /**
  * <p>
@@ -136,8 +121,8 @@ public class GlobalConfigUtils {
         return getGlobalConfig(configuration).getDbType();
     }
 
-    public static IKeyGenerator getKeyGenerator(Configuration configuration) {
-        return getGlobalConfig(configuration).getKeyGenerator();
+    public static Incrementer getIncrementer(Configuration configuration) {
+        return getGlobalConfig(configuration).getIncrementer();
     }
 
     public static IdType getIdType(Configuration configuration) {

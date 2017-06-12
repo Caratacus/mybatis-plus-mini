@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2011-2014, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.test.h2.entity.persistent;
 
 import java.io.Serializable;
@@ -21,8 +6,8 @@ import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.annotations.Version;
 import com.baomidou.mybatisplus.enums.FieldStrategy;
+import com.baomidou.mybatisplus.enums.IdType;
 
 /**
  * <p>
@@ -40,7 +25,7 @@ public class H2User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /* 主键ID 注解，value 字段名，type 用户输入ID */
-    @TableId(value = "test_id")
+    @TableId(value = "test_id", type = IdType.ID_WORKER)
     private Long id;
 
     /* 测试忽略验证 */
@@ -57,7 +42,6 @@ public class H2User implements Serializable {
 
     private String desc;
 
-    @Version
     private Integer version;
 
 

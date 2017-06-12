@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2011-2014, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.entity;
 
 import java.io.Serializable;
@@ -26,11 +11,11 @@ import com.baomidou.mybatisplus.MybatisSqlSessionTemplate;
 import com.baomidou.mybatisplus.enums.DBType;
 import com.baomidou.mybatisplus.enums.FieldStrategy;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.baomidou.mybatisplus.mapper.AutoSqlInjector;
-import com.baomidou.mybatisplus.mapper.IKeyGenerator;
-import com.baomidou.mybatisplus.mapper.ISqlInjector;
+import com.baomidou.mybatisplus.incrementer.Incrementer;
 import com.baomidou.mybatisplus.mapper.MetaObjectHandler;
 import com.baomidou.mybatisplus.plugins.DefaultMetaObjectHandler;
+import com.baomidou.mybatisplus.sqlInjector.AutoSqlInjector;
+import com.baomidou.mybatisplus.sqlInjector.ISqlInjector;
 import com.baomidou.mybatisplus.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.toolkit.JdbcUtils;
 import com.baomidou.mybatisplus.toolkit.SqlReservedWords;
@@ -55,7 +40,7 @@ public class GlobalConfiguration implements Serializable {
     // SQL注入器
     private ISqlInjector sqlInjector = new AutoSqlInjector();
     // 表关键词 key 生成器
-    private IKeyGenerator keyGenerator;
+    private Incrementer incrementer;
     // 元对象字段填充控制器
     private MetaObjectHandler metaObjectHandler = new DefaultMetaObjectHandler();
     // 字段验证策略
@@ -81,12 +66,12 @@ public class GlobalConfiguration implements Serializable {
         this.sqlInjector = sqlInjector;
     }
 
-    public IKeyGenerator getKeyGenerator() {
-        return keyGenerator;
+    public Incrementer getIncrementer() {
+        return incrementer;
     }
 
-    public void setKeyGenerator(IKeyGenerator keyGenerator) {
-        this.keyGenerator = keyGenerator;
+    public void setIncrementer(Incrementer incrementer) {
+        this.incrementer = incrementer;
     }
 
     public DBType getDbType() {
@@ -178,7 +163,7 @@ public class GlobalConfiguration implements Serializable {
     }
 
     public String getIdentifierQuote() {
-        if (null == identifierQuote && dbType != null) {
+        if (null == identifierQuote) {
             return DBType.getQuote(dbType);
         }
         return identifierQuote;

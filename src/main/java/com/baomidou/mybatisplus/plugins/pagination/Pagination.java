@@ -1,23 +1,10 @@
-/**
- * Copyright (c) 2011-2014, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.plugins.pagination;
 
 import java.io.Serializable;
 
 import org.apache.ibatis.session.RowBounds;
+
+import com.baomidou.mybatisplus.toolkit.StringUtils;
 
 /**
  * <p>
@@ -49,9 +36,32 @@ public class Pagination extends RowBounds implements Serializable {
     private boolean searchCount = true;
 
     /**
+     * 开启排序（默认 true） 只在代码逻辑判断 并不截取sql分析
+     *
+     * @see SqlHelper fillWrapper
+     **/
+    private boolean openSort = true;
+
+    /**
      * 查询总数优化（默认 false 该属性只针对于Optimize.DEFAULT有效)
      */
     private boolean optimizeCount = false;
+
+    /**
+     * <p>
+     * SQL 排序 ORDER BY 字段，例如： id DESC（根据id倒序查询）
+     * </p>
+     * <p>
+     * DESC 表示按倒序排序(即：从大到小排序)<br>
+     * ASC 表示按正序排序(即：从小到大排序)
+     * </p>
+     */
+    private String orderByField;
+
+    /**
+     * 是否为升序 ASC（ 默认： true ）
+     */
+    private boolean isAsc = true;
 
     public Pagination() {
         super();
@@ -70,12 +80,17 @@ public class Pagination extends RowBounds implements Serializable {
     }
 
     public Pagination(int current, int size, boolean searchCount) {
+        this(current, size, searchCount, true);
+    }
+
+    public Pagination(int current, int size, boolean searchCount, boolean openSort) {
         super(offsetCurrent(current, size), size);
         if (current > 1) {
             this.current = current;
         }
         this.size = size;
         this.searchCount = searchCount;
+        this.openSort = openSort;
     }
 
     protected static int offsetCurrent(int current, int size) {
@@ -146,6 +161,32 @@ public class Pagination extends RowBounds implements Serializable {
 
     public void setOptimizeCount(boolean optimizeCount) {
         this.optimizeCount = optimizeCount;
+    }
+
+    public String getOrderByField() {
+        return orderByField;
+    }
+
+    public void setOrderByField(String orderByField) {
+        if (StringUtils.isNotEmpty(orderByField)) {
+            this.orderByField = orderByField;
+        }
+    }
+
+    public boolean isOpenSort() {
+        return openSort;
+    }
+
+    public void setOpenSort(boolean openSort) {
+        this.openSort = openSort;
+    }
+
+    public boolean isAsc() {
+        return isAsc;
+    }
+
+    public void setAsc(boolean isAsc) {
+        this.isAsc = isAsc;
     }
 
     @Override

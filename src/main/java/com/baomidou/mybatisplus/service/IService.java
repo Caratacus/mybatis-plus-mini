@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2011-2016, hubin (jobob@qq.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.baomidou.mybatisplus.service;
 
 import java.io.Serializable;
@@ -103,16 +88,6 @@ public interface IService<T> {
      * @return boolean
      */
     boolean deleteById(Serializable id);
-
-    /**
-     * <p>
-     * 根据 columnMap 条件，删除记录
-     * </p>
-     *
-     * @param columnMap 表字段 map 对象
-     * @return boolean
-     */
-    boolean deleteByMap(Map<String, Object> columnMap);
 
     /**
      * <p>
@@ -215,16 +190,6 @@ public interface IService<T> {
      * @return List<T>
      */
     List<T> selectBatchIds(List<? extends Serializable> idList);
-
-    /**
-     * <p>
-     * 查询（根据 columnMap 条件）
-     * </p>
-     *
-     * @param columnMap 表字段 map 对象
-     * @return List<T>
-     */
-    List<T> selectByMap(Map<String, Object> columnMap);
 
     /**
      * <p>
